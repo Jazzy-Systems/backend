@@ -3,6 +3,8 @@ package com.jazzysystems.backend.user;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import com.jazzysystems.backend.user.dto.UserDTO;
+
 @Component
 public class UserMapper {
 

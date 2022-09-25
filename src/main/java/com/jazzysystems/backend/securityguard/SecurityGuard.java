@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.jazzysystems.backend.company.Company;
 import com.jazzysystems.backend.person.Person;
 
 import lombok.AllArgsConstructor;

@@ -3,6 +3,8 @@ package com.jazzysystems.backend.resident;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import com.jazzysystems.backend.resident.dto.ResidentDTO;
+
 @Component
 public class ResidentMapper {
 

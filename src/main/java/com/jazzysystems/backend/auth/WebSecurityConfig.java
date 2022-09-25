@@ -13,7 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.jazzysystems.backend.user.UserDetailsServiceImpl;
+import com.jazzysystems.backend.auth.jwt.AuthEntryPointJwt;
+import com.jazzysystems.backend.auth.jwt.AuthTokenFilter;
+import com.jazzysystems.backend.user.service.UserDetailsServiceImpl;
 
 @Configuration
 public class WebSecurityConfig {
