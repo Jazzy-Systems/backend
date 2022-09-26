@@ -61,6 +61,7 @@ public class WebSecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/v1/apartment/**").hasRole("ADMIN")
+                .antMatchers("/api/v1/company/**").hasRole("ADMIN")
                 .antMatchers("/js/**", "/images/**").permitAll()
                 .anyRequest().authenticated();
         http.authenticationProvider(authenticationProvider());

@@ -23,7 +23,7 @@ public class JwtUtils {
     // TODO set as value anotation that are not public.
     private String jwtSecret = "jzSecret";
 
-    private int jwtExpirationMs = 86400;
+    private int jwtExpirationMs = 1200000;
 
     public String generateJwtToken(Authentication authentication) {
 
