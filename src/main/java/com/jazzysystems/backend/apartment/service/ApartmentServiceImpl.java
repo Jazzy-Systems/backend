@@ -1,5 +1,7 @@
 package com.jazzysystems.backend.apartment.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.jazzysystems.backend.apartment.Apartment;
@@ -29,6 +31,42 @@ public class ApartmentServiceImpl implements ApartmentService {
         Apartment apartment = apartmentRepository.findByBuildingNameAndNumber(buildingName, number).orElseThrow(
                 () -> new NoSuchElementFoundException("Not Found"));
         return apartment;
+    }
+
+    @Override
+    public Apartment updateApartment(Long apartmentId, ApartmentDTO apartmentDTO) {
+        Apartment apartment = this.findApartmentById(apartmentId);
+        apartment.setBuildingName(apartmentDTO.getBuildingName());
+        apartment.setNumber(apartmentDTO.getNumber());
+        return apartmentRepository.save(apartment);
+    }
+
+    @Override
+    public void deleteApartment(ApartmentDTO apartmentDTO) {
+        Apartment apartment = apartmentMapper.convertDTOtoApartment(apartmentDTO);
+        apartmentRepository.delete(apartment);
+    }
+
+    @Override
+    public void deleteApartmentById(Long apartmentId) {
+        apartmentRepository.deleteById(apartmentId);
+    }
+
+    @Override
+    public Apartment findApartmentById(Long apartmentId) {
+        Apartment apartment = apartmentRepository.findById(apartmentId).orElseThrow(
+                () -> new NoSuchElementFoundException("Not Found"));
+        return apartment;
+    }
+
+    @Override
+    public List<Apartment> findAll() {
+        return apartmentRepository.findAll();
+    }
+
+    @Override
+    public Boolean existsById(Long apartmentId) {
+        return apartmentRepository.existsById(apartmentId);
     }
 
 }
