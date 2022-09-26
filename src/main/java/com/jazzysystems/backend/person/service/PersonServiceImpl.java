@@ -22,14 +22,14 @@ public class PersonServiceImpl implements PersonService {
     private final PersonMapper personMapper;
 
     @Override
-    public List<Person> getAllPersons() {
+    public List<Person> findAll() {
         return personRepository.findAll();
     }
 
     @Override
     public Person findPersonByDni(long dni) {
         Person person = personRepository.findPersonByDni(dni).orElseThrow(
-                () -> new NoSuchElementFoundException("Not Found"));
+                () -> new NoSuchElementFoundException("Person Not Found"));
         return person;
     }
 
@@ -41,19 +41,35 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Person findById(Long personId) {
         Person person = personRepository.findById(personId).orElseThrow(
-                () -> new NoSuchElementFoundException("Not Found"));
+                () -> new NoSuchElementFoundException("Person Not Found"));
         return person;
     }
 
     @Override
     public Person savePerson(PersonDTO personDTO) {
-        Person person = personMapper.convertDTOtoPerson(personDTO); // person without Id
-        Optional<Person> optionalPerson = personRepository.findPersonByDni(personDTO.getDni());
-        if (optionalPerson.isPresent()) {
-            person.setPersonId(optionalPerson.get().getPersonId());
-        }
-        // if person exits update otherwise will save a new Person
+        Person person = personMapper.convertDTOtoPerson(personDTO);
         return personRepository.save(person);
+    }
+
+    @Override
+    public Person updatePerson(Long personId, PersonDTO personDTO) {
+        Person person = this.findById(personId);
+        person.setDni(personDTO.getDni());
+        person.setFirstName(personDTO.getFirstName());
+        person.setLastName(personDTO.getLastName());
+        person.setPhone(personDTO.getPersonId());
+        return personRepository.save(person);
+    }
+
+    @Override
+    public void deletePerson(PersonDTO personDTO) {
+        Person person = personMapper.convertDTOtoPerson(personDTO);
+        personRepository.delete(person);
+    }
+
+    @Override
+    public void deletePersonById(Long personId) {
+        personRepository.deleteById(personId);
     }
 
 }
