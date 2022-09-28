@@ -96,7 +96,7 @@ public class AuthController {
                 }
 
                 // find rol
-                Role role = roleService.findRolebyRoleName(registerUserPOJO.getRoleName());
+                Role role = roleService.findbyRoleName(registerUserPOJO.getRoleName());
                 if (role.getRoleName() == "ROLE_RESIDENT") {
                         // find apartment
                         Apartment apartment = apartmentService.findByBuildingNameAndNumber(
