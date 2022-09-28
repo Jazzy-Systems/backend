@@ -3,6 +3,7 @@ package com.jazzysystems.backend.auth.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +24,16 @@ import com.jazzysystems.backend.auth.dto.JwtResponsePOJO;
 import com.jazzysystems.backend.auth.dto.LoginPOJO;
 import com.jazzysystems.backend.auth.dto.RegisterUserPOJO;
 import com.jazzysystems.backend.auth.jwt.JwtUtils;
+import com.jazzysystems.backend.company.Company;
+import com.jazzysystems.backend.company.service.CompanyService;
 import com.jazzysystems.backend.person.Person;
 import com.jazzysystems.backend.person.service.PersonService;
 import com.jazzysystems.backend.resident.dto.ResidentDTO;
 import com.jazzysystems.backend.resident.service.ResidentService;
 import com.jazzysystems.backend.role.Role;
 import com.jazzysystems.backend.role.service.RoleService;
+import com.jazzysystems.backend.securityguard.dto.SecurityGuardDTO;
+import com.jazzysystems.backend.securityguard.service.SecurityGuardService;
 import com.jazzysystems.backend.user.UserDetailsImpl;
 import com.jazzysystems.backend.user.dto.UserDTO;
 import com.jazzysystems.backend.user.service.UserService;
@@ -57,6 +62,12 @@ public class AuthController {
         private ApartmentService apartmentService;
 
         @Autowired
+        private SecurityGuardService securityGuardService;
+
+        @Autowired
+        private CompanyService companyService;
+
+        @Autowired
         PasswordEncoder passwordEncoder;
 
         @Autowired
@@ -82,6 +93,7 @@ public class AuthController {
                                 roles));
         }
 
+        @Transactional
         @PostMapping("/signup")
         public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUserPOJO registerUserPOJO) {
 
@@ -97,16 +109,21 @@ public class AuthController {
 
                 // find rol
                 Role role = roleService.findbyRoleName(registerUserPOJO.getRoleName());
-                if (role.getRoleName() == "ROLE_RESIDENT") {
+                if (role.getRoleName().equals("ROLE_RESIDENT")) {
                         // find apartment
                         Apartment apartment = apartmentService.findByBuildingNameAndNumber(
                                         registerUserPOJO.getApartmentDTO().getBuildingName(),
                                         registerUserPOJO.getApartmentDTO().getNumber());
                         ResidentDTO residentDTO = new ResidentDTO(person, apartment);
+                        
                         residentService.saveResident(residentDTO);
 
-                } else if (role.getRoleName() == "ROLE_GUARD") {
-
+                } else if (role.getRoleName().equals("ROLE_GUARD")) {
+                        // find apartment
+                        Company company = companyService.findByCompanyName(
+                                        registerUserPOJO.getCompanyName());
+                        SecurityGuardDTO securityGuardDTO = new SecurityGuardDTO(person, company);
+                        securityGuardService.saveSecurityGuard(securityGuardDTO);
                 } else {
 
                 }
