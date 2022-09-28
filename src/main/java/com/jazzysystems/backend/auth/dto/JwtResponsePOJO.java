@@ -21,11 +21,11 @@ public class JwtResponsePOJO {
 
     private String email;
 
-    private List<String> roles;
+    private String role;
 
     public JwtResponsePOJO(String accessToken, String email, List<String> roles) {
         this.accessToken = accessToken;
         this.email = email;
-        this.roles = roles;
+        this.role = roles.get(0);
     }
 }

@@ -19,7 +19,7 @@ public class RegisterUserPOJO {
     // User
     private String email;
     private String password;
-    private String enabled;
+    private String isEnabled;
 
     // Person
     private PersonDTO personDTO;
