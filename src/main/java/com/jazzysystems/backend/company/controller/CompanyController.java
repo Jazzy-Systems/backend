@@ -18,8 +18,6 @@ import com.jazzysystems.backend.company.service.CompanyService;
 
 import lombok.RequiredArgsConstructor;
 
-//TODO preautorized(admin for all methods? or could the resident have acces to
-//few of them)
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequiredArgsConstructor

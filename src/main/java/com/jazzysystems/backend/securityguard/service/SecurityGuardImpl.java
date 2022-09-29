@@ -1,6 +1,5 @@
 package com.jazzysystems.backend.securityguard.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jazzysystems.backend.securityguard.SecurityGuard;
@@ -12,10 +11,10 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class SecurityGuardImpl implements SecurityGuardService{
-    
+public class SecurityGuardImpl implements SecurityGuardService {
+
     private final SecurityGuardRepository securityGuardRepository;
-    
+
     private final SecurityGuardMapper securityGuardMapper;
 
     @Override
@@ -23,15 +22,5 @@ public class SecurityGuardImpl implements SecurityGuardService{
         SecurityGuard securityGuard = securityGuardMapper.convertDTOtoSecurityGuard(securityGuardDTO);
         return securityGuardRepository.save(securityGuard);
     }
-
-    /*
-    @Override
-    public SecurityGuard findByCompany(CompanyDTO companyDTO) {
-        Company company = securityGuardMapper.convertDTOtoCompany(companyDTO);
-        SecurityGuard securityGuard = securityGuardRepository.findsecurity_guardByCompany(company).orElseThrow(
-                () -> new NoSuchElementFoundException("Not Found"));
-        return apartment;
-    }
-    */
 
 }

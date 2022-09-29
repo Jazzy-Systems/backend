@@ -53,13 +53,12 @@ public class WebSecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 
-    // TODO antMatcher for each table: hasrole(Admin or allowed role)
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/api/auth/**").permitAll()
+                .authorizeRequests().antMatchers("/api/auth/**", "/api/v1/role/**").permitAll()
                 .antMatchers("/api/v1/apartment/**").hasRole("ADMIN")
                 .antMatchers("/api/v1/company/**").hasRole("ADMIN")
                 .antMatchers("/js/**", "/images/**").permitAll()
