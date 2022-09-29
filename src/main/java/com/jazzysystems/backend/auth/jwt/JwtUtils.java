@@ -20,7 +20,6 @@ import io.jsonwebtoken.UnsupportedJwtException;
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    // TODO set as value anotation that are not public.
     private String jwtSecret = "jzSecret";
 
     private int jwtExpirationMs = 1200000;
@@ -37,7 +36,6 @@ public class JwtUtils {
                 .compact();
     }
 
-    // TODO change to email
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }

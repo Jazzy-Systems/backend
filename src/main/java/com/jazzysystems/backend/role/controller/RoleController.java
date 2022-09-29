@@ -18,8 +18,6 @@ import com.jazzysystems.backend.role.service.RoleService;
 
 import lombok.RequiredArgsConstructor;
 
-//TODO preautorized(admin for all methods? or could the resident have acces to
-//few of them)
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequiredArgsConstructor
@@ -37,15 +35,7 @@ public class RoleController {
         Role role = roleService.findRoleById(roleId);
         return new ResponseEntity<Role>(role, HttpStatus.OK);
     }
-    
-    /*
-    @GetMapping({"/{roleName}" })
-    public ResponseEntity<?> findbyRoleName(@PathVariable String roleName) {
-        Role role = roleService.findbyRoleName(roleName);
-        return new ResponseEntity<Role>(role, HttpStatus.OK);
-    }
-    */
-    
+
     @PostMapping()
     public ResponseEntity<?> saveRole(@RequestBody RoleDTO roleDTO) {
         Role role = roleService.saveRole(roleDTO);
