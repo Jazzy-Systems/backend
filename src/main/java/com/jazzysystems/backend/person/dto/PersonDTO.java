@@ -21,4 +21,11 @@ public class PersonDTO {
     @NotBlank
     private long dni;
     private long phone;
+    public PersonDTO(@NotBlank String firstName, @NotBlank String lastName, @NotBlank long dni, long phone) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dni = dni;
+        this.phone = phone;
+    }
+    
 }

@@ -36,9 +36,9 @@ public class Person implements Serializable {
     private String lastName;
 
     @Column(name = "dni", nullable = false, unique = true)
-    private long dni;
+    private Long dni;
 
     @Column(name = "phone", nullable = false)
-    private long phone;
+    private Long phone;
 
 }
