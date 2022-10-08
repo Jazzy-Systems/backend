@@ -6,7 +6,7 @@ import com.jazzysystems.backend.securityguard.SecurityGuard;
 import com.jazzysystems.backend.securityguard.dto.SecurityGuardDTO;
 
 public interface SecurityGuardService {
-    
+
     SecurityGuard saveSecurityGuard(SecurityGuardDTO securityGuardDTO);
 
     SecurityGuard updateSecurityGuard(Long securityGuardId, SecurityGuardDTO securityGuardDTO);
@@ -22,7 +22,5 @@ public interface SecurityGuardService {
     SecurityGuard findByCompany(Company company);
 
     Boolean existsById(Long securityGuardId);
-
-    SecurityGuard findByPerson(Person person);
 
 }
