@@ -2,6 +2,7 @@ package com.jazzysystems.backend.resident;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -45,4 +46,11 @@ public class Resident implements Serializable {
     @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Apartment apartment;
+
+    @Column(name = "isRepresentative")
+    private Boolean isRepresentative;
+
+    @Column(name = "isResident")
+    private Boolean isResident;
+
 }
