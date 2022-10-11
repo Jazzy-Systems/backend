@@ -1,12 +1,14 @@
 package com.jazzysystems.backend.securityguard.service;
 
+import com.jazzysystems.backend.company.Company;
+import com.jazzysystems.backend.person.Person;
 import com.jazzysystems.backend.securityguard.SecurityGuard;
 import com.jazzysystems.backend.securityguard.dto.SecurityGuardDTO;
 
 public interface SecurityGuardService {
+    
     SecurityGuard saveSecurityGuard(SecurityGuardDTO securityGuardDTO);
 
-    /*
     SecurityGuard updateSecurityGuard(Long securityGuardId, SecurityGuardDTO securityGuardDTO);
 
     void deleteSecurityGuard(SecurityGuardDTO securityGuardDTO);
@@ -17,8 +19,10 @@ public interface SecurityGuardService {
 
     List<SecurityGuard> findAll();
 
-    SecurityGuard findByCompany(CompanyDTO companyDTO);
+    SecurityGuard findByCompany(Company company);
 
     Boolean existsById(Long securityGuardId);
-    */
+
+    SecurityGuard findByPerson(Person person);
+
 }

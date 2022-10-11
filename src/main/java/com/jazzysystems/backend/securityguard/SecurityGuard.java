@@ -45,4 +45,7 @@ public class SecurityGuard implements Serializable {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Person person;
 
+    @Column(name = "isActive", nullable = true)
+    private Boolean isActive;
+
 }
