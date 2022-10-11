@@ -23,4 +23,8 @@ public interface ApartmentService {
             String buildingName, String number);
 
     Boolean existsById(Long apartmentId);
+
+    Apartment findByCodeApartment(
+            String codeApartment);
+
 }

@@ -33,5 +33,8 @@ public class Apartment implements Serializable {
     private String buildingName;
 
     @Column(name = "apartmentNumber", nullable = false)
-    private String number;
+    private String apartmentNumber;
+
+    @Column(name = "codeApartment", nullable = false)
+    private String codeApartment;
 }

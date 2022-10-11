@@ -37,7 +37,7 @@ public class ApartmentServiceImpl implements ApartmentService {
     public Apartment updateApartment(Long apartmentId, ApartmentDTO apartmentDTO) {
         Apartment apartment = this.findApartmentById(apartmentId);
         apartment.setBuildingName(apartmentDTO.getBuildingName());
-        apartment.setNumber(apartmentDTO.getNumber());
+        apartment.setApartmentNumber(apartmentDTO.getNumber());
         return apartmentRepository.save(apartment);
     }
 
@@ -67,6 +67,13 @@ public class ApartmentServiceImpl implements ApartmentService {
     @Override
     public Boolean existsById(Long apartmentId) {
         return apartmentRepository.existsById(apartmentId);
+    }
+
+    @Override
+    public Apartment findByCodeApartment(String codeApartment){
+        Apartment apartment = apartmentRepository.finbByCodeApartment(codeApartment).orElseThrow(
+                () -> new NoSuchElementFoundException("Not Found"));
+        return apartment;
     }
 
 }
