@@ -23,4 +23,8 @@ public interface CompanyService {
             String companyName);
 
     Boolean existsById(Long companyId);
+
+    Company finbByCodeCompany(
+            String codeCompany);
+
 }

@@ -10,4 +10,7 @@ public class CompanyDTO {
     private String companyName;
 
     private long phone;
+
+    private Long companyEmail;
+
 }

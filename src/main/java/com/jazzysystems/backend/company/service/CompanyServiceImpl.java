@@ -29,7 +29,9 @@ public class CompanyServiceImpl implements CompanyService {
     public Company updateCompany(Long companyId, CompanyDTO companyDTO) {
         Company company = this.findCompanyById(companyId);
         company.setCompanyName(companyDTO.getCompanyName());
+        company.setCompanyEmail(companyDTO.getCompanyEmail());
         company.setPhone(companyDTO.getPhone());
+        company.setNit(comapnyDTO.getNit());
         return companyRepository.save(company);
     }
 
@@ -66,6 +68,13 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Boolean existsById(Long companyId) {
         return companyRepository.existsById(companyId);
+    }
+
+    @Override
+    public Company finbByCodeCompany(String codeCompany){
+        Company company = companyRepository.findByCodeCompany(codeCompany).orElseThrow(
+                () -> new NoSuchElementFoundException("Company Not Found"));
+        return company;
     }
 
 }

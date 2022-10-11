@@ -29,10 +29,19 @@ public class Company implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long companyId;
 
+    @Column(name = "nit", nullable = false, unique = true)
+    private Long nit;
+
     @Column(name = "companyName", nullable = false, unique = true)
     private String companyName;
 
     @Column(name = "phone", nullable = false)
     private long phone;
+
+    @Column(name = "companyEmail", nullable = false, unique = true)
+    private String companyEmail;
+
+     @Column(name = "codeCompany", nullable = false, unique = true)
+    private String codeCompany;
 
 }
