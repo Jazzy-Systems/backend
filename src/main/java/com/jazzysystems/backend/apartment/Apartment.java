@@ -22,7 +22,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name = "Apartment", indexes = @Index(name = "uniqueApartment", columnList = "buildingName, apartmentNumber", unique = true))
+@Table(name = "Apartment", indexes = {
+    @Index(name = "uniqueApartment", columnList = "buildingName, apartmentNumber", unique = true),
+    @Index(name = "uniqueCodeApartment", columnList = "codeApartment", unique = true) })
 public class Apartment implements Serializable {
 
     @Id
