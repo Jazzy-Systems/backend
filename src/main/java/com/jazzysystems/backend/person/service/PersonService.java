@@ -23,4 +23,7 @@ public interface PersonService {
 
     List<Person> findAll();
 
+    Person findPersonByEmail(String email);
+
+    Boolean existsByEmail(String email);
 }

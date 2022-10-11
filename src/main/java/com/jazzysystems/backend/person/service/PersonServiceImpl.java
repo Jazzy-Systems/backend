@@ -57,6 +57,7 @@ public class PersonServiceImpl implements PersonService {
         person.setFirstName(personDTO.getFirstName());
         person.setLastName(personDTO.getLastName());
         person.setPhone(personDTO.getPhone());
+        person.setEmail(personDTO.getEmail());
         return personRepository.save(person);
     }
 
@@ -69,6 +70,18 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public void deletePersonById(Long personId) {
         personRepository.deleteById(personId);
+    }
+
+    @Override
+    public Person findPersonByEmail(String email) {
+        Person person = personRepository.findByEmail(email).orElseThrow(
+                () -> new NoSuchElementFoundException("Person Not Found"));
+        return person;
+    }
+
+    @Override
+    public Boolean existsByEmail(String email) {
+        return personRepository.existsByEmail(email);
     }
 
 }

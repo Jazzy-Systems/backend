@@ -14,18 +14,27 @@ import lombok.Setter;
 public class PersonDTO {
 
     private long personId;
+
     @NotBlank
     private String firstName;
+
     @NotBlank
     private String lastName;
+
     @NotBlank
     private long dni;
+
     private long phone;
-    public PersonDTO(@NotBlank String firstName, @NotBlank String lastName, @NotBlank long dni, long phone) {
+
+    @NotBlank
+    private String email;
+
+    public PersonDTO(@NotBlank String firstName, @NotBlank String lastName, @NotBlank long dni, long phone,
+            @NotBlank String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dni = dni;
         this.phone = phone;
     }
-    
+
 }

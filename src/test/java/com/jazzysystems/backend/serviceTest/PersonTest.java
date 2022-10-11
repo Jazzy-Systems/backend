@@ -24,7 +24,7 @@ public class PersonTest {
 
     @Test
     public void testSavePerson() {
-        PersonDTO personDTO = new PersonDTO("Sebastian", "Hernandez", 123369517, 320479509);
+        PersonDTO personDTO = new PersonDTO("Sebastian", "Hernandez", 123369517, 320479509, "newemail@email.com");
         Person person = personService.savePerson(personDTO);
         assertNotNull(person);
         assertEquals(123369517, person.getDni());

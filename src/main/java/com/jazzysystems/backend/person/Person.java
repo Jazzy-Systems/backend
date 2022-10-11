@@ -17,7 +17,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "Person", indexes = @Index(name = "uniqueDni", columnList = "dni", unique = true))
+@Table(name = "Person", indexes = { @Index(name = "uniqueDni", columnList = "dni", unique = true),
+        @Index(name = "uniqueEmail", columnList = "email", unique = true) })
 @Getter
 @Setter
 @NoArgsConstructor
@@ -40,5 +41,8 @@ public class Person implements Serializable {
 
     @Column(name = "phone", nullable = false)
     private Long phone;
+
+    @Column(name = "email", nullable = false, length = 100)
+    private String email;
 
 }

@@ -11,4 +11,9 @@ import com.jazzysystems.backend.person.Person;
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
     Optional<Person> findPersonByDni(long dni);
+
+    Optional<Person> findByEmail(String email);
+
+    Boolean existsByEmail(String email);
+
 }
