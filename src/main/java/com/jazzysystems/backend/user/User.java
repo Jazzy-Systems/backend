@@ -38,9 +38,6 @@ public class User implements Serializable {
     @Column(name = "userId", columnDefinition = "serial")
     private Long userId;
 
-    @Column(name = "email", unique = true, nullable = false)
-    private String email;
-
     @Column(name = "password", nullable = false)
     private String password;
 
