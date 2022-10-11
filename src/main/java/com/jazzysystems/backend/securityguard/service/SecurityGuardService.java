@@ -1,5 +1,7 @@
 package com.jazzysystems.backend.securityguard.service;
 
+import java.util.List;
+
 import com.jazzysystems.backend.company.Company;
 import com.jazzysystems.backend.person.Person;
 import com.jazzysystems.backend.securityguard.SecurityGuard;
@@ -22,5 +24,7 @@ public interface SecurityGuardService {
     SecurityGuard findByCompany(Company company);
 
     Boolean existsById(Long securityGuardId);
+
+    SecurityGuard findByPerson(Person person);
 
 }

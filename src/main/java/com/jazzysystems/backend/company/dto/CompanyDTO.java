@@ -7,10 +7,12 @@ public class CompanyDTO {
 
     private Long companyId;
 
+    private Long nit;
+
     private String companyName;
 
-    private long phone;
+    private Long phone;
 
-    private Long companyEmail;
+    private String companyEmail;
 
 }

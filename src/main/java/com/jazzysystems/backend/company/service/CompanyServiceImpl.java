@@ -31,7 +31,7 @@ public class CompanyServiceImpl implements CompanyService {
         company.setCompanyName(companyDTO.getCompanyName());
         company.setCompanyEmail(companyDTO.getCompanyEmail());
         company.setPhone(companyDTO.getPhone());
-        company.setNit(comapnyDTO.getNit());
+        company.setNit(companyDTO.getNit());
         return companyRepository.save(company);
     }
 
@@ -71,7 +71,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Company finbByCodeCompany(String codeCompany){
+    public Company finbByCodeCompany(String codeCompany) {
         Company company = companyRepository.findByCodeCompany(codeCompany).orElseThrow(
                 () -> new NoSuchElementFoundException("Company Not Found"));
         return company;

@@ -2,6 +2,7 @@ package com.jazzysystems.backend.securityguard;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,7 +29,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name = "SecurityGuard", indexes = @Index (name = "uniquePerson", columnList = "person_person_id", unique = true))
+@Table(name = "SecurityGuard", indexes = @Index(name = "uniquePerson", columnList = "person_person_id", unique = true))
 public class SecurityGuard implements Serializable {
 
     @Id
