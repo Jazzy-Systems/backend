@@ -9,6 +9,7 @@ import com.jazzysystems.backend.apartment.ApartmentMapper;
 import com.jazzysystems.backend.apartment.dto.ApartmentDTO;
 import com.jazzysystems.backend.apartment.repository.ApartmentRepository;
 import com.jazzysystems.backend.exception.NoSuchElementFoundException;
+import com.jazzysystems.backend.util.SecurityCodeGenerator;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +24,7 @@ public class ApartmentServiceImpl implements ApartmentService {
     @Override
     public Apartment saveApartment(ApartmentDTO apartmentDTO) {
         Apartment apartment = apartmentMapper.convertDTOtoApartment(apartmentDTO);
+        apartment.setCodeApartment(this.generateCodeApartment());
         return apartmentRepository.save(apartment);
     }
 
@@ -70,10 +72,22 @@ public class ApartmentServiceImpl implements ApartmentService {
     }
 
     @Override
-    public Apartment findByCodeApartment(String codeApartment){
-        Apartment apartment = apartmentRepository.finbByCodeApartment(codeApartment).orElseThrow(
+    public Apartment findByCodeApartment(String codeApartment) {
+        Apartment apartment = apartmentRepository.findByCodeApartment(codeApartment).orElseThrow(
                 () -> new NoSuchElementFoundException("Not Found"));
         return apartment;
     }
 
+    public String generateCodeApartment() {
+        SecurityCodeGenerator securityCodeGenerator = new SecurityCodeGenerator();
+        String total = Long.toString(apartmentRepository.count());
+        String codeApartment = securityCodeGenerator.generateCode(total);
+        int limit = 50;
+        int i = 0;
+        while (this.apartmentRepository.existsByCodeApartment(codeApartment) && i < limit) {
+            codeApartment = securityCodeGenerator.generateCode(total);
+            i++;
+        }
+        return codeApartment;
+    }
 }
