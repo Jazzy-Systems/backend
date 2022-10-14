@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.jazzysystems.backend.person.Person;
+import com.jazzysystems.backend.person.repository.PersonRepository;
 import com.jazzysystems.backend.user.User;
 import com.jazzysystems.backend.user.UserDetailsImpl;
 import com.jazzysystems.backend.user.UserMapper;
@@ -26,27 +28,51 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private PersonRepository personRepository;
+
+    @Autowired
     private UserMapper userMapper;
 
     @Transactional
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> optionalUser = userRepository.findUserByEmail(username);
-        if (optionalUser.isPresent()) {
-            return new UserDetailsImpl(optionalUser.get());
+        Optional<Person> optionalPerson = personRepository.findByEmail(username);
+        if (optionalPerson.isPresent()) {
+            Optional<User> optionalUser = userRepository.findUserByPerson(optionalPerson.get());
+            if (optionalUser.isPresent()) {
+                return new UserDetailsImpl(optionalUser.get());
+            } else {
+                throw new UsernameNotFoundException("User Not Found");
+            }
+        } else {
+            throw new UsernameNotFoundException("User Not Found");
+        }
+
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        Optional<Person> optionalPerson = personRepository.findByEmail(email);
+        if (optionalPerson.isPresent()) {
+            Optional<User> optionalUser = userRepository.findUserByPerson(optionalPerson.get());
+            if (optionalUser.isPresent()) {
+                return optionalUser.get();
+            } else {
+                throw new UsernameNotFoundException("User Not Found");
+            }
         } else {
             throw new UsernameNotFoundException("User Not Found");
         }
     }
 
     @Override
-    public User findUserByEmail(String email) {
-        return userRepository.findUserByEmail(email).get();
-    }
-
-    @Override
     public Boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
+        Optional<Person> optionalPerson = personRepository.findByEmail(email);
+        if (optionalPerson.isPresent()) {
+            Optional<User> optionalUser = userRepository.findUserByPerson(optionalPerson.get());
+            return optionalUser.isPresent();
+        }
+        return false;
     }
 
     @Override

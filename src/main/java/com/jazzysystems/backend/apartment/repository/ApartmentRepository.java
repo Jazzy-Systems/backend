@@ -10,7 +10,7 @@ import com.jazzysystems.backend.apartment.Apartment;
 @Repository
 public interface ApartmentRepository extends JpaRepository<Apartment, Long> {
 
-    Optional<Apartment> findByBuildingNameAndNumber(
+    Optional<Apartment> findByBuildingNameAndApartmentNumber(
             String buildingName, String number);
 
     Optional<Apartment> findByCodeApartment(String codeApartment);

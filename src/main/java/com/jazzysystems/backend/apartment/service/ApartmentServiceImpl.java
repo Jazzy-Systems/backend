@@ -30,8 +30,9 @@ public class ApartmentServiceImpl implements ApartmentService {
 
     @Override
     public Apartment findByBuildingNameAndNumber(String buildingName, String number) {
-        Apartment apartment = apartmentRepository.findByBuildingNameAndNumber(buildingName, number).orElseThrow(
-                () -> new NoSuchElementFoundException("Not Found"));
+        Apartment apartment = apartmentRepository.findByBuildingNameAndApartmentNumber(buildingName, number)
+                .orElseThrow(
+                        () -> new NoSuchElementFoundException("Not Found"));
         return apartment;
     }
 

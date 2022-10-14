@@ -33,4 +33,7 @@ public class RegisterUserPOJO {
     // SecurityGuard
     private String companyName;
 
+    // Latest implementation
+    private String codeApartment;
+
 }

@@ -43,98 +43,113 @@ import com.jazzysystems.backend.user.service.UserService;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-        @Autowired
-        private AuthenticationManager authenticationManager;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-        @Autowired
-        private UserService userService;
+    @Autowired
+    private UserService userService;
 
-        @Autowired
-        private RoleService roleService;
+    @Autowired
+    private RoleService roleService;
 
-        @Autowired
-        private PersonService personService;
+    @Autowired
+    private PersonService personService;
 
-        @Autowired
-        private ResidentService residentService;
+    @Autowired
+    private ResidentService residentService;
 
-        @Autowired
-        private ApartmentService apartmentService;
+    @Autowired
+    private ApartmentService apartmentService;
 
-        @Autowired
-        private SecurityGuardService securityGuardService;
+    @Autowired
+    private SecurityGuardService securityGuardService;
 
-        @Autowired
-        private CompanyService companyService;
+    @Autowired
+    private CompanyService companyService;
 
-        @Autowired
-        PasswordEncoder passwordEncoder;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
-        @Autowired
-        private JwtUtils jwtUtils;
+    @Autowired
+    private JwtUtils jwtUtils;
 
-        @PostMapping("/signin")
-        public ResponseEntity<?> authenticateUser(
-                        @Valid @RequestBody LoginPOJO loginPOJO) {
-                Authentication authentication = authenticationManager.authenticate(
-                                new UsernamePasswordAuthenticationToken(
-                                                loginPOJO.getEmail(), loginPOJO.getPassword()));
+    @PostMapping("/signin")
+    public ResponseEntity<?> authenticateUser(
+            @Valid @RequestBody LoginPOJO loginPOJO) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginPOJO.getEmail(), loginPOJO.getPassword()));
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                String jwt = jwtUtils.generateJwtToken(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
 
-                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-                List<String> roles = userDetails.getAuthorities().stream()
-                                .map(item -> item.getAuthority())
-                                .collect(Collectors.toList());
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
 
-                return ResponseEntity.ok(new JwtResponsePOJO(jwt,
-                                userDetails.getUsername(),
-                                roles));
+        return ResponseEntity.ok(new JwtResponsePOJO(jwt,
+                userDetails.getUsername(),
+                roles));
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    @PostMapping("/signup")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUserPOJO registerUserPOJO) {
+
+        // Find or save Person
+        Person person = null;
+        if (userService.existsByEmail(registerUserPOJO.getEmail())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Error: Username is already taken!");
+        }
+        if (registerUserPOJO.getRoleName().equals("ROLE_ADMIN")
+                && !personService.existsByEmail(registerUserPOJO.getEmail())) {
+            System.out.println("en condicional");
+            person = personService.savePerson(registerUserPOJO.getPersonDTO());
+
+        } else {
+            person = personService.findPersonByEmail(registerUserPOJO.getEmail());
         }
 
-        @Transactional
-        @PostMapping("/signup")
-        public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUserPOJO registerUserPOJO) {
+        // Check if user already exists
+        /*
+         *
+         * if (userService.existsByEmail(registerUserPOJO.getEmail())) {
+         * return ResponseEntity
+         * .badRequest()
+         * .body("Error: Username is already taken!");
+         * }
+         */
 
-                // Find or save Person
-                Person person = personService.savePerson(registerUserPOJO.getPersonDTO());
+        // find rol
+        Role role = roleService.findbyRoleName(registerUserPOJO.getRoleName());
+        if (role.getRoleName().equals("ROLE_RESIDENT")) {
+            // find apartment
+            Apartment apartment = apartmentService.findByCodeApartment(
+                    registerUserPOJO.getCodeApartment());
 
-                // Check if user already exists
-                if (userService.existsByEmail(registerUserPOJO.getEmail())) {
-                        return ResponseEntity
-                                        .badRequest()
-                                        .body("Error: Username is already taken!");
-                }
+            ResidentDTO residentDTO = new ResidentDTO(person, apartment, true, true);
 
-                // find rol
-                Role role = roleService.findbyRoleName(registerUserPOJO.getRoleName());
-                if (role.getRoleName().equals("ROLE_RESIDENT")) {
-                        // find apartment
-                        Apartment apartment = apartmentService.findByBuildingNameAndNumber(
-                                        registerUserPOJO.getApartmentDTO().getBuildingName(),
-                                        registerUserPOJO.getApartmentDTO().getNumber());
-                        ResidentDTO residentDTO = new ResidentDTO(person, apartment);
-                        
-                        residentService.saveResident(residentDTO);
+            residentService.saveResident(residentDTO);
 
-                } else if (role.getRoleName().equals("ROLE_GUARD")) {
-                        // find apartment
-                        Company company = companyService.findByCompanyName(
-                                        registerUserPOJO.getCompanyName());
-                        SecurityGuardDTO securityGuardDTO = new SecurityGuardDTO(person, company);
-                        securityGuardService.saveSecurityGuard(securityGuardDTO);
-                } else {
+        } else if (role.getRoleName().equals("ROLE_GUARD")) {
+            // find apartment
+            Company company = companyService.findByCompanyName(
+                    registerUserPOJO.getCompanyName());
+            SecurityGuardDTO securityGuardDTO = new SecurityGuardDTO(person, company);
+            securityGuardService.saveSecurityGuard(securityGuardDTO);
+        } else {
 
-                }
-                // Create new user's account
-                UserDTO userDTO = new UserDTO(null, registerUserPOJO.getEmail(),
-                                passwordEncoder.encode(registerUserPOJO.getPassword()),
-                                false, person, role);
-
-                userService.saveUser(userDTO);
-
-                return ResponseEntity.ok(("User registered successfully!"));
         }
+        // Create new user's account
+        UserDTO userDTO = new UserDTO(null, registerUserPOJO.getEmail(),
+                false, person, role);
+
+        userService.saveUser(userDTO);
+
+        return ResponseEntity.ok(("User registered successfully!"));
+    }
 
 }
