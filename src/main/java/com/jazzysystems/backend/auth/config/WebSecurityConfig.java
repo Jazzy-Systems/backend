@@ -53,12 +53,15 @@ public class WebSecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 
+    // TODO create list urls for each role, also permit by http method type
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/api/auth/**", "/api/v1/role/**").permitAll()
+                .authorizeRequests().antMatchers("/api/auth/**", "/api/v1/role/**",
+                        "api/v1/typeCommunique", "api/v1/ommunique")
+                .permitAll()
                 .antMatchers("/api/v1/apartment/**").hasRole("ADMIN")
                 .antMatchers("/api/v1/company/**").hasRole("ADMIN")
                 .antMatchers("/js/**", "/images/**").permitAll()

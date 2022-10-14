@@ -15,6 +15,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.jazzysystems.backend.person.Person;
+import com.jazzysystems.backend.typeCommunique.TypeCommunique;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,5 +47,10 @@ public class Communique {
     @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Person person;
+
+    @OneToOne
+    @JoinColumn
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private TypeCommunique typeCommunique;
 
 }
