@@ -40,7 +40,7 @@ public class ApartmentServiceImpl implements ApartmentService {
     public Apartment updateApartment(Long apartmentId, ApartmentDTO apartmentDTO) {
         Apartment apartment = this.findApartmentById(apartmentId);
         apartment.setBuildingName(apartmentDTO.getBuildingName());
-        apartment.setApartmentNumber(apartmentDTO.getNumber());
+        apartment.setApartmentNumber(apartmentDTO.getApartmentNumber());
         return apartmentRepository.save(apartment);
     }
 

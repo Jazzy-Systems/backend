@@ -106,7 +106,6 @@ public class AuthController {
         }
         if (registerUserPOJO.getRoleName().equals("ROLE_ADMIN")
                 && !personService.existsByEmail(registerUserPOJO.getEmail())) {
-            System.out.println("en condicional");
             person = personService.savePerson(registerUserPOJO.getPersonDTO());
 
         } else {
@@ -143,8 +142,9 @@ public class AuthController {
         } else {
 
         }
+
         // Create new user's account
-        UserDTO userDTO = new UserDTO(null, registerUserPOJO.getEmail(),
+        UserDTO userDTO = new UserDTO(null, passwordEncoder.encode(registerUserPOJO.getPassword()),
                 false, person, role);
 
         userService.saveUser(userDTO);

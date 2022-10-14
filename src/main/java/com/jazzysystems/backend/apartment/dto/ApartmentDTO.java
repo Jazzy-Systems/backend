@@ -13,5 +13,5 @@ public class ApartmentDTO {
     private String buildingName;
 
     @NotBlank
-    private String number;
+    private String apartmentNumber;
 }
