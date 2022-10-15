@@ -95,7 +95,7 @@ public class AuthController {
 
     @Transactional(rollbackOn = Exception.class)
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUserPOJO registerUserPOJO) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody RegisterUserPOJO registerUserPOJO) {
 
         // Find or save Person
         Person person = null;
@@ -111,16 +111,6 @@ public class AuthController {
         } else {
             person = personService.findPersonByEmail(registerUserPOJO.getEmail());
         }
-
-        // Check if user already exists
-        /*
-         *
-         * if (userService.existsByEmail(registerUserPOJO.getEmail())) {
-         * return ResponseEntity
-         * .badRequest()
-         * .body("Error: Username is already taken!");
-         * }
-         */
 
         // find rol
         Role role = roleService.findbyRoleName(registerUserPOJO.getRoleName());
@@ -150,6 +140,49 @@ public class AuthController {
         userService.saveUser(userDTO);
 
         return ResponseEntity.ok(("User registered successfully!"));
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    @PostMapping("/registerPerson")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUserPOJO registerUserPOJO) {
+
+        Person person = null;
+        if (userService.existsByEmail(registerUserPOJO.getEmail()) ||
+                personService.existsByDni(registerUserPOJO.getPersonDTO().getDni())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Error: Username is already taken!");
+        }
+
+        if (registerUserPOJO.getRoleName().equals("ROLE_ADMIN")
+                && !personService.existsByEmail(registerUserPOJO.getEmail())) {
+            registerUserPOJO.getPersonDTO().setEmail(registerUserPOJO.getEmail());
+            person = personService.savePerson(registerUserPOJO.getPersonDTO());
+
+        }
+
+        Role role = roleService.findbyRoleName(registerUserPOJO.getRoleName());
+        if (role.getRoleName().equals("ROLE_RESIDENT")) {
+            Apartment apartment = apartmentService.findByBuildingNameAndNumber(
+                    registerUserPOJO.getApartmentDTO().getBuildingName(),
+                    registerUserPOJO.getApartmentDTO().getApartmentNumber());
+
+            ResidentDTO residentDTO = new ResidentDTO(person, apartment, true, true);
+
+            residentService.saveResident(residentDTO);
+
+        } else if (role.getRoleName().equals("ROLE_GUARD")) {
+            Company company = companyService.findByCompanyName(
+                    registerUserPOJO.getCompanyName());
+            SecurityGuardDTO securityGuardDTO = new SecurityGuardDTO(person, company);
+            securityGuardService.saveSecurityGuard(securityGuardDTO);
+        } else {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Error: The Role doesn'not exist");
+        }
+
+        return ResponseEntity.ok(("Person registered successfully!"));
     }
 
 }

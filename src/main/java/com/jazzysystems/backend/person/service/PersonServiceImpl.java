@@ -84,4 +84,9 @@ public class PersonServiceImpl implements PersonService {
         return personRepository.existsByEmail(email);
     }
 
+    @Override
+    public Boolean existsByDni(Long dni) {
+        return personRepository.existsByDni(dni);
+    }
+
 }

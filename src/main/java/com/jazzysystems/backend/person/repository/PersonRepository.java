@@ -16,4 +16,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     Boolean existsByEmail(String email);
 
+    Boolean existsByDni(Long dni);
+
 }

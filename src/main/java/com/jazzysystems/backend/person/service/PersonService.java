@@ -26,4 +26,6 @@ public interface PersonService {
     Person findPersonByEmail(String email);
 
     Boolean existsByEmail(String email);
+
+    Boolean existsByDni(Long dni);
 }

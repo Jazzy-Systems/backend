@@ -1,5 +1,6 @@
 package com.jazzysystems.backend.communique.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -21,7 +22,8 @@ public class CommuniqueServiceImpl implements CommuniqueService {
     @Override
     public Communique save(CommuniqueDTO communiqueDTO) {
         Communique communique = new Communique();
-        communique.setDatePublished(communiqueDTO.getDatePublished());
+        LocalDate datePublished = LocalDate.now();
+        communique.setDatePublished(datePublished);
         communique.setDescription(communiqueDTO.getDescription());
         communique.setPerson(communiqueDTO.getPerson());
         communique.setTitleCommunique(communiqueDTO.getTitleCommunique());
