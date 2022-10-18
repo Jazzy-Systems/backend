@@ -9,6 +9,7 @@ import com.jazzysystems.backend.company.CompanyMapper;
 import com.jazzysystems.backend.company.dto.CompanyDTO;
 import com.jazzysystems.backend.company.repository.CompanyRepository;
 import com.jazzysystems.backend.exception.NoSuchElementFoundException;
+import com.jazzysystems.backend.util.SecurityCodeGenerator;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +23,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Company saveCompany(CompanyDTO companyDTO) {
         Company company = companyMapper.convertDTOtoCompany(companyDTO);
+        company.setCodeCompany(this.generateCodeCompany());
         return companyRepository.save(company);
     }
 
@@ -38,6 +40,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public void deleteCompany(CompanyDTO companyDTO) {
         Company company = companyMapper.convertDTOtoCompany(companyDTO);
+        company.setCodeCompany(null);
         companyRepository.delete(company);
     }
 
@@ -75,6 +78,19 @@ public class CompanyServiceImpl implements CompanyService {
         Company company = companyRepository.findByCodeCompany(codeCompany).orElseThrow(
                 () -> new NoSuchElementFoundException("Company Not Found"));
         return company;
+    }
+
+    public String generateCodeCompany() {
+        SecurityCodeGenerator securityCodeGenerator = new SecurityCodeGenerator();
+        String total = Long.toString(companyRepository.count());
+        String codeCompany = securityCodeGenerator.generateCode(total);
+        int limit = 50;
+        int i = 0;
+        while (this.companyRepository.existsByCodeCompany(codeCompany) && i < limit) {
+            codeCompany = securityCodeGenerator.generateCode(total);
+            i++;
+        }
+        return codeCompany;
     }
 
 }
