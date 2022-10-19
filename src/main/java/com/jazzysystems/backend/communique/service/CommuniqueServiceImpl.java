@@ -3,6 +3,7 @@ package com.jazzysystems.backend.communique.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.jazzysystems.backend.communique.Communique;
@@ -63,7 +64,7 @@ public class CommuniqueServiceImpl implements CommuniqueService {
 
     @Override
     public List<Communique> findAll() {
-        return communiqueRepository.findAll();
+        return communiqueRepository.findAll(Sort.by(Sort.Direction.DESC, "datePublished"));
     }
 
     @Override
