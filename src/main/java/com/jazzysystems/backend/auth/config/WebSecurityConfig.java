@@ -60,7 +60,7 @@ public class WebSecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/api/auth/**", "/api/v1/role/**",
-                        "api/v1/typeCommunique", "api/v1/ommunique")
+                        "api/v1/typeCommunique", "api/v1/communique")
                 .permitAll()
                 .antMatchers("/api/v1/apartment/**").hasRole("ADMIN")
                 .antMatchers("/api/v1/company/**").hasRole("ADMIN")

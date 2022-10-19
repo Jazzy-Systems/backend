@@ -16,11 +16,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RegisterUserPOJO {
 
-    // User
-    private String email;
-    private String password;
-    private String isEnabled;
-
     // Person
     private PersonDTO personDTO;
 
@@ -32,8 +27,5 @@ public class RegisterUserPOJO {
 
     // SecurityGuard
     private String companyName;
-
-    // Latest implementation
-    private String codeApartment;
 
 }

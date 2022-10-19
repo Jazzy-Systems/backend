@@ -10,7 +10,6 @@ import javax.validation.Valid;
 import org.thymeleaf.context.Context;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +32,7 @@ import com.jazzysystems.backend.apartment.service.ApartmentService;
 import com.jazzysystems.backend.auth.dto.JwtResponsePOJO;
 import com.jazzysystems.backend.auth.dto.LoginPOJO;
 import com.jazzysystems.backend.auth.dto.RegisterUserPOJO;
+import com.jazzysystems.backend.auth.dto.SignUpDTO;
 import com.jazzysystems.backend.auth.jwt.JwtUtils;
 import com.jazzysystems.backend.company.Company;
 import com.jazzysystems.backend.company.service.CompanyService;
@@ -63,9 +63,8 @@ public class AuthController {
     private static final String TEMPLATE_NAME = "emailCode";
     private static final String SPRING_LOGO_IMAGE = "templates/images/Logo.png";
     private static final String PNG_MIME = "image/png";
-    private static final String MAIL_SUBJECT = "Completar Registro en JazzySystemsApp";
+    private static final String MAIL_SUBJECT = "Bienvenido a JazzySystemsApp";
 
-    // @Value("${spring.mail.properties.mail.smtp.from}")
     final String mailFrom = "jazzysystem2022+1@gmail.com";
 
     @Autowired
@@ -115,63 +114,59 @@ public class AuthController {
 
     @Transactional(rollbackOn = Exception.class)
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@Valid @RequestBody RegisterUserPOJO registerUserPOJO) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpDTO signUpDTO) {
 
         // Find or save Person
         Person person = null;
-        if (userService.existsByEmail(registerUserPOJO.getEmail())) {
+        if (userService.existsByEmail(signUpDTO.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body("Error: Username is already taken!");
         }
-        if (registerUserPOJO.getRoleName().equals("ROLE_ADMIN")
-                && !personService.existsByEmail(registerUserPOJO.getEmail())) {
-            person = personService.savePerson(registerUserPOJO.getPersonDTO());
+        person = personService.findPersonByEmail(signUpDTO.getEmail());
 
-        } else {
-            person = personService.findPersonByEmail(registerUserPOJO.getEmail());
-        }
-
-        // find rol
         Boolean saveUser = false;
-        Role role = roleService.findbyRoleName(registerUserPOJO.getRoleName());
+        // find rol
+        Role role = roleService.findbyRoleName(signUpDTO.getRoleName());
         if (role.getRoleName().equals("ROLE_RESIDENT")) {
             // find apartment
             Apartment apartment = apartmentService.findByCodeApartment(
-                    registerUserPOJO.getCodeApartment());
+                    signUpDTO.getCode());
             // find resident
             Resident resident = residentService.findByPerson(person);
             // check if apartment and resident are correct
             saveUser = (apartment.getApartmentId().equals(resident.getApartment().getApartmentId()));
         } else if (role.getRoleName().equals("ROLE_GUARD")) {
             // find company
-            Company company = companyService.findByCompanyName(
-                    registerUserPOJO.getCompanyName());
+            Company company = companyService.finbByCodeCompany(
+                    signUpDTO.getCode());
             // find securityGuard
             SecurityGuard securityGuard = securityGuardService.findByPerson(person);
             // check if company and securityguard are correct
             saveUser = (company.getCompanyId().equals(securityGuard.getCompany().getCompanyId()));
-        } else {
-
+        } else if (role.getRoleName().equals("ROLE_ADMIN")) {
+            saveUser = true;
         }
 
         // Create new user's account only if the data is correct
         if (saveUser) {
-            UserDTO userDTO = new UserDTO(null, passwordEncoder.encode(registerUserPOJO.getPassword()),
+            UserDTO userDTO = new UserDTO(null, passwordEncoder.encode(signUpDTO.getPassword()),
                     false, person, role);
             userService.saveUser(userDTO);
             return ResponseEntity.ok(("User registered successfully!"));
         }
-        return ResponseEntity.ok(("User registered successfully!"));
+        return ResponseEntity
+                .badRequest()
+                .body("Error: Por favor verifique los campos");
 
     }
 
     @Transactional(rollbackOn = Exception.class)
     @PostMapping("/registerPerson")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUserPOJO registerUserPOJO) {
+    public ResponseEntity<?> registerPerson(@Valid @RequestBody RegisterUserPOJO registerUserPOJO) {
 
         Person person = null;
-        if (userService.existsByEmail(registerUserPOJO.getEmail()) ||
+        if (userService.existsByEmail(registerUserPOJO.getPersonDTO().getEmail()) ||
                 personService.existsByDni(registerUserPOJO.getPersonDTO().getDni())) {
             return ResponseEntity
                     .badRequest()
@@ -179,30 +174,15 @@ public class AuthController {
         }
         Role role = roleService.findbyRoleName(registerUserPOJO.getRoleName());
         // SAVE person
-        registerUserPOJO.getPersonDTO().setEmail(registerUserPOJO.getEmail());
         person = personService.savePerson(registerUserPOJO.getPersonDTO());
-        // admin
-        if (registerUserPOJO.getRoleName().equals("ROLE_ADMIN")
-                && !personService.existsByEmail(registerUserPOJO.getEmail())) {
-            registerUserPOJO.getPersonDTO().setEmail(registerUserPOJO.getEmail());
-            person = personService.savePerson(registerUserPOJO.getPersonDTO());
-            UserDTO userDTO = new UserDTO(null, passwordEncoder.encode(registerUserPOJO.getPassword()),
-                    false, person, role);
-
-            userService.saveUser(userDTO);
-
-        }
-
         if (role.getRoleName().equals("ROLE_RESIDENT")) {
             Apartment apartment = apartmentService.findByBuildingNameAndNumber(
                     registerUserPOJO.getApartmentDTO().getBuildingName(),
                     registerUserPOJO.getApartmentDTO().getApartmentNumber());
 
             ResidentDTO residentDTO = new ResidentDTO(person, apartment, true, true);
-
             residentService.saveResident(residentDTO);
             this.sendEmail(person, apartment.getCodeApartment());
-
         } else if (role.getRoleName().equals("ROLE_GUARD")) {
             Company company = companyService.findByCompanyName(
                     registerUserPOJO.getCompanyName());
@@ -248,8 +228,9 @@ public class AuthController {
             email.addInline("springLogo", clr, PNG_MIME);
 
             mailSender.send(mimeMessage);
+            System.out.println("El email se envio correctamente\n \n");
         } catch (Exception e) {
-            System.out.println("No se pudo enviar el mensaje");
+            System.out.println(e.getMessage() + " No se pudo enviar el mensaje");
         }
 
     }
