@@ -34,14 +34,13 @@ import com.jazzysystems.backend.resident.Resident;
 import com.jazzysystems.backend.resident.repository.ResidentRepository;
 import com.jazzysystems.backend.typeCommunique.TypeCommunique;
 import com.jazzysystems.backend.typeCommunique.repository.TypeCommuniqueRepository;
-import com.jazzysystems.backend.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/communique")
+@RequestMapping("/api/v1/communique/")
 public class CommuniqueController {
 
     private static final String TEMPLATE_NAME = "communique";

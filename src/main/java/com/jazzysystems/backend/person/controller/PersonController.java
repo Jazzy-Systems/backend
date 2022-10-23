@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/person")
+@RequestMapping("/api/v1/person/")
 public class PersonController {
 
     private final PersonService personService;
@@ -55,4 +55,11 @@ public class PersonController {
         personService.deletePersonById(personId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping({ "/dni/{dni}" })
+    public ResponseEntity<?> findByDni(@PathVariable Long dni) {
+        Person person = personService.findPersonByDni(dni);
+        return new ResponseEntity<Person>(person, HttpStatus.OK);
+    }
+
 }
