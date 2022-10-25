@@ -3,6 +3,7 @@ package com.jazzysystems.backend.auth.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -60,8 +61,10 @@ public class WebSecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/api/auth/**", "/api/v1/role/**",
-                        "api/v1/typeCommunique", "api/v1/communique", "api/v1/person/**")
+                        "api/v1/typeCommunique", "api/v1/person/**")
                 .permitAll()
+                .antMatchers(HttpMethod.GET, "api/v1/communique/").hasAnyRole("ADMIN", "RESIDENT", "GUARD")
+                .antMatchers("api/v1/communique/**").hasRole("ADMIN")
                 .antMatchers("/api/v1/apartment/**").hasRole("ADMIN")
                 .antMatchers("/api/v1/company/**").hasRole("ADMIN")
                 .antMatchers("/js/**", "/images/**").permitAll()
