@@ -34,6 +34,7 @@ import com.jazzysystems.backend.resident.Resident;
 import com.jazzysystems.backend.resident.repository.ResidentRepository;
 import com.jazzysystems.backend.typeCommunique.TypeCommunique;
 import com.jazzysystems.backend.typeCommunique.repository.TypeCommuniqueRepository;
+import com.jazzysystems.backend.util.emailSender.EmailService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -61,7 +62,9 @@ public class CommuniqueController {
     private final TypeCommuniqueRepository typeCommuniqueRepository;
     @Autowired
     private final ResidentRepository residentRepository;
-
+    @Autowired
+    private final EmailService emailService;
+    
     @GetMapping(value = "")
     public ResponseEntity<?> findAllCommuniques() {
         return new ResponseEntity<>(communiqueService.findAll(), HttpStatus.OK);
@@ -160,6 +163,5 @@ public class CommuniqueController {
         } catch (Exception e) {
             System.out.println(e.getMessage() + " No se pudo enviar el mensaje");
         }
-
     }
 }
