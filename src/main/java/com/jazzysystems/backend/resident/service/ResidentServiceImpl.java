@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jazzysystems.backend.apartment.Apartment;
 import com.jazzysystems.backend.exception.NoSuchElementFoundException;
 import com.jazzysystems.backend.person.Person;
 import com.jazzysystems.backend.resident.Resident;
@@ -66,6 +67,11 @@ public class ResidentServiceImpl implements ResidentService {
         Resident resident = residentRepository.findByPerson(person).orElseThrow(
                 () -> new NoSuchElementFoundException("Not Found"));
         return resident;
+    }
+
+    @Override
+    public Boolean ExistsByApartmentAndIsRepresentative(Boolean isRepresentative, Apartment apartment) {
+        return residentRepository.existsByApartmentAndIsRepresentative(apartment, isRepresentative);
     }
 
 }

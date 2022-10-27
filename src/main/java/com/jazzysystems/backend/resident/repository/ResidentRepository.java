@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.jazzysystems.backend.apartment.Apartment;
 import com.jazzysystems.backend.person.Person;
 import com.jazzysystems.backend.resident.Resident;
 
@@ -12,4 +13,6 @@ import com.jazzysystems.backend.resident.Resident;
 public interface ResidentRepository extends JpaRepository<Resident, Long> {
     Optional<Resident> findByPerson(Person person);
 
+    Boolean existsByApartmentAndIsRepresentative(
+            Apartment apartment, Boolean isRepresentative);
 }

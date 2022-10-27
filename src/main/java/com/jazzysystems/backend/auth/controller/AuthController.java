@@ -180,7 +180,9 @@ public class AuthController {
                     registerUserPOJO.getApartmentDTO().getBuildingName(),
                     registerUserPOJO.getApartmentDTO().getApartmentNumber());
 
-            ResidentDTO residentDTO = new ResidentDTO(person, apartment, true, true);
+            Boolean isRepresentative = !residentService.ExistsByApartmentAndIsRepresentative(true, apartment);
+
+            ResidentDTO residentDTO = new ResidentDTO(person, apartment, isRepresentative, true);
             residentService.saveResident(residentDTO);
             this.sendEmail(person, apartment.getCodeApartment());
         } else if (role.getRoleName().equals("ROLE_GUARD")) {
