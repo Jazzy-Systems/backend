@@ -14,4 +14,5 @@ public class RoleDTO {
     @NotBlank
     private boolean isEnabled;
 
+    
 }
