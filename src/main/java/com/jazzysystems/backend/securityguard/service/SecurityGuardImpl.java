@@ -75,7 +75,7 @@ public class SecurityGuardImpl implements SecurityGuardService {
     @Override
     public SecurityGuard findByPerson(Person person) {
         SecurityGuard securityGuard = securityGuardRepository.findByPerson(person).orElseThrow(
-                () -> new NoSuchElementFoundException("Not Found"));
+                () -> new NoSuchElementFoundException("Not Found Security Guard"));
         return securityGuard;
     }
 

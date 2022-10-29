@@ -61,6 +61,6 @@ public class Pack implements Serializable {
     @Column(name = "datePickedUp")
     private LocalDateTime datePickedUp;
 
-    @Column(name = "dateArrival", nullable = false)
+    @Column(name = "dateArrival")
     private LocalDateTime dateArrival;
 }

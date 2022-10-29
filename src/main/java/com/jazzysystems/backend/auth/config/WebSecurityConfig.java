@@ -67,6 +67,9 @@ public class WebSecurityConfig {
                 .antMatchers("api/v1/communique/**").hasRole("ADMIN")
                 .antMatchers("/api/v1/apartment/**").hasRole("ADMIN")
                 .antMatchers("/api/v1/company/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/pack/").hasAnyRole("RESIDENT", "GUARD")
+                .antMatchers(HttpMethod.DELETE, "/api/v1/pack/").denyAll()
+                .antMatchers("/api/v1/pack/**").hasRole("GUARD")
                 .antMatchers("/js/**", "/images/**").permitAll()
                 .anyRequest().authenticated();
         http.authenticationProvider(authenticationProvider());

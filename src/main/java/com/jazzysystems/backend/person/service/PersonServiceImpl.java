@@ -28,7 +28,7 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Person findPersonByDni(long dni) {
         Person person = personRepository.findPersonByDni(dni).orElseThrow(
-                () -> new NoSuchElementFoundException("Person Not Found"));
+                () -> new NoSuchElementFoundException("DNI Person Not Found"));
         return person;
     }
 
