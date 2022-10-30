@@ -37,8 +37,25 @@ public class EmailService {
     @Autowired
     private final ResidentRepository residentRepository;
 
-    public void sendCommuniqueEmailtoAll(Communique communique, String TEMPLATE_NAME) {
+    private void sendEmail(String htmlContent, String to, String subject) {
+        final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+        final MimeMessageHelper email;
+        try {
+            email = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            email.setTo(to);
+            email.setSubject(subject);
+            email.setFrom(new InternetAddress(mailFrom, mailFromName));
+            email.setText(htmlContent, true);
+            ClassPathResource clr = new ClassPathResource(SPRING_LOGO_IMAGE);
+            email.addInline("springLogo", clr, PNG_MIME);
+            mailSender.send(mimeMessage);
+        } catch (Exception e) {
+            System.out.println(e.getMessage() + " No se pudo enviar el mensaje to" + to);
+        }
+        System.out.println("El email se envio correctamente\n \n");
+    }
 
+    public void sendCommuniqueEmailtoAll(Communique communique, String TEMPLATE_NAME) {
         List<Resident> residents = residentRepository.findAll();
         residents.forEach((resident) -> {
             this.sendCommunique(resident.getPerson(), communique, TEMPLATE_NAME);
@@ -72,22 +89,19 @@ public class EmailService {
 
     }
 
-    private void sendEmail(String htmlContent, String to, String subject) {
-        final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
-        final MimeMessageHelper email;
+    public void sendRegisterCode(Person person, String code, String TEMPLATE_NAME) {
         try {
-            email = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-            email.setTo(to);
-            email.setSubject(subject);
-            email.setFrom(new InternetAddress(mailFrom, mailFromName));
-            email.setText(htmlContent, true);
-            ClassPathResource clr = new ClassPathResource(SPRING_LOGO_IMAGE);
-            email.addInline("springLogo", clr, PNG_MIME);
-            mailSender.send(mimeMessage);
+            final Context ctx = new Context(LocaleContextHolder.getLocale());
+            ctx.setVariable("email", person.getEmail());
+            ctx.setVariable("name", person.getFirstName() + " " + person.getLastName());
+            ctx.setVariable("code", code);
+            ctx.setVariable("springLogo", SPRING_LOGO_IMAGE);
+            // TODO url of signup when deployed
+            ctx.setVariable("url", "TODO");
+            final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
+            this.sendEmail(htmlContent, person.getEmail(), "Bienvenido a JazzySystems");
         } catch (Exception e) {
-            System.out.println(e.getMessage() + " No se pudo enviar el mensaje to" + to);
+            System.out.println(e.getMessage() + " No se pudo enviar el mensaje");
         }
-        System.out.println("El email se envio correctamente\n \n");
     }
-
 }

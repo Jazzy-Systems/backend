@@ -3,18 +3,11 @@ package com.jazzysystems.backend.auth.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import org.thymeleaf.context.Context;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.thymeleaf.TemplateEngine;
 
 import com.jazzysystems.backend.apartment.Apartment;
 import com.jazzysystems.backend.apartment.service.ApartmentService;
@@ -49,6 +41,7 @@ import com.jazzysystems.backend.securityguard.service.SecurityGuardService;
 import com.jazzysystems.backend.user.UserDetailsImpl;
 import com.jazzysystems.backend.user.dto.UserDTO;
 import com.jazzysystems.backend.user.service.UserService;
+import com.jazzysystems.backend.util.emailSender.EmailService;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -61,16 +54,9 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
     private static final String TEMPLATE_NAME = "emailCode";
-    private static final String SPRING_LOGO_IMAGE = "templates/images/Logo.png";
-    private static final String PNG_MIME = "image/png";
-    private static final String MAIL_SUBJECT = "Bienvenido a JazzySystemsApp";
-
-    final String mailFrom = "jazzysystem2022+1@gmail.com";
 
     @Autowired
-    private JavaMailSender mailSender;
-    @Autowired
-    private TemplateEngine htmlTemplateEngine;
+    private EmailService emailService;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -184,13 +170,13 @@ public class AuthController {
 
             ResidentDTO residentDTO = new ResidentDTO(person, apartment, isRepresentative, true);
             residentService.saveResident(residentDTO);
-            this.sendEmail(person, apartment.getCodeApartment());
+            emailService.sendRegisterCode(person, apartment.getCodeApartment(), TEMPLATE_NAME);
         } else if (role.getRoleName().equals("ROLE_GUARD")) {
             Company company = companyService.findByCompanyName(
                     registerUserPOJO.getCompanyName());
             SecurityGuardDTO securityGuardDTO = new SecurityGuardDTO(person, company);
             securityGuardService.saveSecurityGuard(securityGuardDTO);
-            this.sendEmail(person, company.getCodeCompany());
+            emailService.sendRegisterCode(person, company.getCodeCompany(), TEMPLATE_NAME);
         } else {
             return ResponseEntity
                     .badRequest()
@@ -200,40 +186,4 @@ public class AuthController {
         return ResponseEntity.ok(("Person registered successfully!"));
     }
 
-    private void sendEmail(Person person, String code) {
-        String confirmationUrl = "generated_confirmation_url";
-
-        final String mailFromName = "JazzySystems";
-
-        final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
-        final MimeMessageHelper email;
-        try {
-            email = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-
-            email.setTo(person.getEmail());
-            email.setSubject(MAIL_SUBJECT);
-            email.setFrom(new InternetAddress(mailFrom, mailFromName));
-
-            final Context ctx = new Context(LocaleContextHolder.getLocale());
-            ctx.setVariable("email", person.getEmail());
-            ctx.setVariable("name", person.getFirstName() + " " + person.getLastName());
-            ctx.setVariable("code", code);
-            ctx.setVariable("springLogo", SPRING_LOGO_IMAGE);
-            ctx.setVariable("url", confirmationUrl);
-
-            final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
-
-            email.setText(htmlContent, true);
-
-            ClassPathResource clr = new ClassPathResource(SPRING_LOGO_IMAGE);
-
-            email.addInline("springLogo", clr, PNG_MIME);
-
-            mailSender.send(mimeMessage);
-            System.out.println("El email se envio correctamente\n \n");
-        } catch (Exception e) {
-            System.out.println(e.getMessage() + " No se pudo enviar el mensaje");
-        }
-
-    }
 }
