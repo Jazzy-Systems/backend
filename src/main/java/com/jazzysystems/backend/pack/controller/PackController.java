@@ -58,7 +58,7 @@ public class PackController {
     }
 
     @GetMapping({ "/mypacks" })
-    public ResponseEntity<?> findMyPacksByPerson(@PathVariable Long personId) {
+    public ResponseEntity<?> findMyPacksByPerson() {
         String emailOrusername = SecurityContextHolder.getContext().getAuthentication().getName();
         Person person = personService.findPersonByEmail(emailOrusername);
 

@@ -88,5 +88,4 @@ public class PersonServiceImpl implements PersonService {
     public Boolean existsByDni(Long dni) {
         return personRepository.existsByDni(dni);
     }
-
 }

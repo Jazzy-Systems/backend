@@ -11,9 +11,9 @@ public interface RequestService {
 
     Request updateRequest(Long requestId, RequestDTO requestDTO);
 
-    void deletePack(RequestDTO requestDTO);
+    void deleteRequest(RequestDTO requestDTO);
 
-    void deleteByIdPack(Long requestId);
+    void deleteByIdRequest(Long requestId);
 
     Request findByIdRequest(Long requestId);
 
@@ -21,7 +21,9 @@ public interface RequestService {
 
     List<Request> findAllRequestsByStatusRequest(Boolean statusRequest);
 
-    List<Request> findRequestsByPerson(Person person);
+    List<Request> findRequestsByPerson(Long persondni);
+
+    List<Request> findAllByPersonAndStatusRequest(Person person, Boolean statusRequest);
 
     Boolean existsRequestById(Long requestId);
 }

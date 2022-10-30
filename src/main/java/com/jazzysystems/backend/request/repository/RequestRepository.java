@@ -11,4 +11,7 @@ import com.jazzysystems.backend.request.Request;
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Request> findByPerson(Person person);
+    List<Request> findByStatusRequest(Boolean statusRequest);
+    List<Request> findAllByPersonAndStatusRequest(Person person, Boolean statusRequest);
+    List<Request> findAllByPerson(Person person);
 }
