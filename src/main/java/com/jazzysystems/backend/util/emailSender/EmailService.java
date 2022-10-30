@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import com.jazzysystems.backend.communique.Communique;
+import com.jazzysystems.backend.pack.Pack;
 import com.jazzysystems.backend.person.Person;
 import com.jazzysystems.backend.resident.Resident;
 import com.jazzysystems.backend.resident.repository.ResidentRepository;
@@ -100,6 +101,25 @@ public class EmailService {
             ctx.setVariable("url", "TODO");
             final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
             this.sendEmail(htmlContent, person.getEmail(), "Bienvenido a JazzySystems");
+        } catch (Exception e) {
+            System.out.println(e.getMessage() + " No se pudo enviar el mensaje");
+        }
+    }
+
+    public void sendPackNotification(Person person, Pack pack) {
+        String TEMPLATE_NAME = "packNotification";
+        try {
+            final Context ctx = new Context(LocaleContextHolder.getLocale());
+            ctx.setVariable("name", person.getFirstName() + " " + person.getLastName());
+            ctx.setVariable("date", pack.getDateArrival());
+            ctx.setVariable("pack", pack.getTypePack());
+            ctx.setVariable("messenger", pack.getMessengerName());
+            ctx.setVariable("observation", pack.getObservation());
+            ctx.setVariable("springLogo", SPRING_LOGO_IMAGE);
+            // TODO url of signup when deployed
+            ctx.setVariable("url", "TODO");
+            final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
+            this.sendEmail(htmlContent, person.getEmail(), "Notificación: Paquete en portería");
         } catch (Exception e) {
             System.out.println(e.getMessage() + " No se pudo enviar el mensaje");
         }

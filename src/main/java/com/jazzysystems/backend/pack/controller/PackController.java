@@ -23,6 +23,7 @@ import com.jazzysystems.backend.pack.service.PackService;
 import com.jazzysystems.backend.person.service.PersonService;
 import com.jazzysystems.backend.securityguard.SecurityGuard;
 import com.jazzysystems.backend.securityguard.service.SecurityGuardService;
+import com.jazzysystems.backend.util.emailSender.EmailService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,9 +32,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/pack/")
 public class PackController {
+
+    @Autowired
+    private final EmailService emailService;
     @Autowired
     private final PackService packService;
-    
+
     @Autowired
     private final PersonService personService;
 
@@ -66,7 +70,6 @@ public class PackController {
         return new ResponseEntity<>(pack, HttpStatus.OK);
     }
 
-
     @PostMapping()
     public ResponseEntity<?> save(@RequestBody PackDTO packDTO) {
         String emailOrusername = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -80,8 +83,8 @@ public class PackController {
             packDTO.setSecurityGuard(securityGuard);
             packDTO.setPerson(person);
             Pack pack = packService.savePack(packDTO);
-            //System.out.println(pack.getObservation());
-            //this.sendEmailtoAllResidents(communique);
+            // send Email()
+            emailService.sendPackNotification(person, pack);
             return new ResponseEntity<Pack>(pack, HttpStatus.CREATED);
         }
         return new ResponseEntity<String>("Error Bad Request, please check the fields of pack", HttpStatus.BAD_REQUEST);
@@ -90,13 +93,13 @@ public class PackController {
     @PutMapping({ "/{packId}" })
     public ResponseEntity<?> update(@PathVariable("packId") Long packId, @RequestBody PackDTO packDTO) {
         Pack pack = packService.updatePack(packId, packDTO);
-        return new ResponseEntity<Pack>(pack, HttpStatus.CREATED);       
+        return new ResponseEntity<Pack>(pack, HttpStatus.CREATED);
     }
-    
+
     @DeleteMapping({ "/{packId}" })
     public ResponseEntity<?> deleteById(@PathVariable("packId") Long packId) {
         packService.deleteByIdPack(packId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-  
+
 }
