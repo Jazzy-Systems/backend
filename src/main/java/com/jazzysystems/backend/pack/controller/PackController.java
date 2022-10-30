@@ -57,6 +57,16 @@ public class PackController {
         return new ResponseEntity<>(pack, HttpStatus.OK);
     }
 
+    @GetMapping({ "/mypacks" })
+    public ResponseEntity<?> findMyPacksByPerson(@PathVariable Long personId) {
+        String emailOrusername = SecurityContextHolder.getContext().getAuthentication().getName();
+        Person person = personService.findPersonByEmail(emailOrusername);
+
+        List<Pack> pack = packService.findPacksByPerson(person);
+        return new ResponseEntity<>(pack, HttpStatus.OK);
+    }
+
+
     @PostMapping()
     public ResponseEntity<?> save(@RequestBody PackDTO packDTO) {
         String emailOrusername = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -66,7 +76,7 @@ public class PackController {
 
         Person person = personService.findPersonByDni(packDTO.getPerson().getDni());
 
-        if (!securityGuard.equals("Not Found Security Guard") && !person.equals("DNI Person Not Found")) {
+        if (!securityGuard.equals(null) && !person.equals(null)) {
             packDTO.setSecurityGuard(securityGuard);
             packDTO.setPerson(person);
             Pack pack = packService.savePack(packDTO);
