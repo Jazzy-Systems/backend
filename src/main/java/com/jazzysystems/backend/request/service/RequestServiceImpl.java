@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.jazzysystems.backend.auth.Authentication;
 import com.jazzysystems.backend.exception.NoSuchElementFoundException;
 import com.jazzysystems.backend.person.Person;
 import com.jazzysystems.backend.person.service.PersonService;
@@ -28,10 +29,12 @@ public class RequestServiceImpl implements RequestService {
     private final PersonService personService;
     private final TypeRequestService typeRequestService;
 
+    private final Authentication authentication;
+
     @Override
     public Request saveRequest(RequestDTO requestDTO) {
-        String emailOrusername = SecurityContextHolder.getContext().getAuthentication().getName();
-        Person person = personService.findPersonByEmail(emailOrusername);
+
+        Person person = authentication.getAuthenticatedPerson();
         TypeRequest typeRequest = typeRequestService
                 .findByTypeRequestName(requestDTO.getTypeRequest().getTypeRequestName());
 
