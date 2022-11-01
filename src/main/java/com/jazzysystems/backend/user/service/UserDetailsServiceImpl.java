@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.jazzysystems.backend.auth.Authentication;
+import com.jazzysystems.backend.auth.dto.RecoverPasswordDTO;
 import com.jazzysystems.backend.person.Person;
 import com.jazzysystems.backend.person.repository.PersonRepository;
 import com.jazzysystems.backend.user.User;
@@ -17,6 +20,7 @@ import com.jazzysystems.backend.user.UserDetailsImpl;
 import com.jazzysystems.backend.user.UserMapper;
 import com.jazzysystems.backend.user.dto.UserDTO;
 import com.jazzysystems.backend.user.repository.UserRepository;
+import com.jazzysystems.backend.util.SecurityCodeGenerator;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +36,15 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private Authentication autentication;
+
+    @Autowired
+    private SecurityCodeGenerator securityCodeGenerator;
 
     @Transactional
     @Override
@@ -80,6 +93,28 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserService {
         User user = userMapper.convertDTOtoUser(userDTO);
         return userRepository.save(user);
 
+    }
+
+    @Override
+    public void recoverPassword(RecoverPasswordDTO recoverPasswordDTO) {
+        int LEN = 10;
+        User user = this.findUserByEmail(recoverPasswordDTO.getEmail());
+        String password = securityCodeGenerator.generatePassword(LEN);
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+    }
+
+    @Override
+    public void changePassword(RecoverPasswordDTO recoverPasswordDTO) {
+        User user = this.findUserByEmail(recoverPasswordDTO.getEmail());
+        if (user.equals(autentication.getUser()) &&
+                passwordEncoder.matches(
+                        recoverPasswordDTO.getCurrentPassword(), user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(recoverPasswordDTO.getNewPassword()));
+            userRepository.save(user);
+        } else {
+            throw new UsernameNotFoundException("Datos incorrectos");
+        }
     }
 
 }

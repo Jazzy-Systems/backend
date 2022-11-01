@@ -14,7 +14,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +25,7 @@ import com.jazzysystems.backend.apartment.Apartment;
 import com.jazzysystems.backend.apartment.service.ApartmentService;
 import com.jazzysystems.backend.auth.dto.JwtResponsePOJO;
 import com.jazzysystems.backend.auth.dto.LoginPOJO;
+import com.jazzysystems.backend.auth.dto.RecoverPasswordDTO;
 import com.jazzysystems.backend.auth.dto.RegisterUserPOJO;
 import com.jazzysystems.backend.auth.dto.SignUpDTO;
 import com.jazzysystems.backend.auth.jwt.JwtUtils;
@@ -184,6 +187,20 @@ public class AuthController {
         }
 
         return ResponseEntity.ok(("Person registered successfully!"));
+    }
+
+    @GetMapping(value = "/recover")
+    public ResponseEntity<?> sendRecoverPassword(@RequestBody RecoverPasswordDTO recoverPasswordDTO) {
+        userService.recoverPassword(recoverPasswordDTO);
+        // TODO emailsend password;
+        return ResponseEntity.ok(("A su correo se ha enviado los pasos para recuperar contraseña"));
+    }
+
+    @PutMapping(value = "/recover")
+    public ResponseEntity<?> recoverPassword(@RequestBody RecoverPasswordDTO recoverPasswordDTO) {
+        // TODO changedpassword email
+        userService.changePassword(recoverPasswordDTO);
+        return ResponseEntity.ok(("Se ha cambiado la contraseña!"));
     }
 
 }

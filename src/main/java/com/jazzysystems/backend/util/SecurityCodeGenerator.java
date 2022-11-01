@@ -24,4 +24,19 @@ public class SecurityCodeGenerator {
 
     }
 
+    public String generatePassword(int len) {
+        Random random = new Random();
+
+        return random.ints(48, 123)
+
+                .filter(num -> (num < 91 || num > 96))
+
+                .limit(len)
+
+                .mapToObj(c -> (char) c).collect(StringBuffer::new, StringBuffer::append, StringBuffer::append)
+
+                .toString();
+
+    }
+
 }
