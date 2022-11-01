@@ -43,10 +43,17 @@ public class PersonController {
         return new ResponseEntity<Person>(person, HttpStatus.CREATED);
     }
 
-    @PutMapping({ "/{personId}" })
+    @PutMapping({ "/{personId}" }) // admin y persona
     public ResponseEntity<?> updatePerson(@PathVariable("personId") Long personId,
             @RequestBody PersonDTO personDTO) {
         Person person = personService.updatePerson(personId, personDTO);
+        return new ResponseEntity<>(person, HttpStatus.OK);
+    }
+
+    @PutMapping({ "/update/{phone}" })
+    public ResponseEntity<?> updatePersonProfile(
+            @PathVariable("phone") Long phone) {
+        Person person = personService.updatePhone(phone);
         return new ResponseEntity<>(person, HttpStatus.OK);
     }
 
@@ -59,6 +66,17 @@ public class PersonController {
     @GetMapping({ "/dni/{dni}" })
     public ResponseEntity<?> findByDni(@PathVariable Long dni) {
         Person person = personService.findPersonByDni(dni);
+        return new ResponseEntity<Person>(person, HttpStatus.OK);
+    }
+
+    /**
+     * get the data of the authenticated person
+     * 
+     * @return Person
+     */
+    @GetMapping({ "/person/" })
+    public ResponseEntity<?> getPerson() {
+        Person person = personService.getPerson();
         return new ResponseEntity<Person>(person, HttpStatus.OK);
     }
 

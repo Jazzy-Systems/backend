@@ -28,4 +28,8 @@ public interface PersonService {
     Boolean existsByEmail(String email);
 
     Boolean existsByDni(Long dni);
+
+    Person updatePhone(Long phone);
+
+    Person getPerson();
 }

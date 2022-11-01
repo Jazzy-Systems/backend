@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.jazzysystems.backend.auth.Authentication;
 import com.jazzysystems.backend.exception.NoSuchElementFoundException;
 import com.jazzysystems.backend.person.Person;
 import com.jazzysystems.backend.person.PersonMapper;
@@ -19,6 +20,8 @@ public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
 
     private final PersonMapper personMapper;
+
+    private final Authentication authentication;
 
     @Override
     public List<Person> findAll() {
@@ -87,5 +90,17 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Boolean existsByDni(Long dni) {
         return personRepository.existsByDni(dni);
+    }
+
+    @Override
+    public Person updatePhone(Long phone) {
+        Person person = authentication.getAuthenticatedPerson();
+        person.setPhone(phone);
+        return personRepository.save(person);
+    }
+
+    @Override
+    public Person getPerson() {
+        return authentication.getAuthenticatedPerson();
     }
 }

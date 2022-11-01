@@ -1,5 +1,6 @@
 package com.jazzysystems.backend.util.emailSender;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.mail.internet.InternetAddress;
@@ -120,6 +121,23 @@ public class EmailService {
             ctx.setVariable("url", "TODO");
             final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
             this.sendEmail(htmlContent, person.getEmail(), "Notificación: Paquete en portería");
+        } catch (Exception e) {
+            System.out.println(e.getMessage() + " No se pudo enviar el mensaje");
+        }
+    }
+
+    public void sendRecoveredPassword(Person person, String password) {
+        String TEMPLATE_NAME = "recover";
+        try {
+            final Context ctx = new Context(LocaleContextHolder.getLocale());
+            ctx.setVariable("name", person.getFirstName() + " " + person.getLastName());
+            ctx.setVariable("date", LocalDateTime.now());
+            ctx.setVariable("password", password);
+            ctx.setVariable("springLogo", SPRING_LOGO_IMAGE);
+            // TODO url of signup when deployed
+            ctx.setVariable("url", "TODO");
+            final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
+            this.sendEmail(htmlContent, person.getEmail(), "Recuperar contraseña");
         } catch (Exception e) {
             System.out.println(e.getMessage() + " No se pudo enviar el mensaje");
         }
