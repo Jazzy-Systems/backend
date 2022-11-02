@@ -22,10 +22,13 @@ public class JwtResponsePOJO {
     private String email;
 
     private String role;
+    
+    private boolean isEnabled;
 
-    public JwtResponsePOJO(String accessToken, String email, List<String> roles) {
+    public JwtResponsePOJO(String accessToken, String email, List<String> roles, boolean isEnabled) {
         this.accessToken = accessToken;
         this.email = email;
         this.role = roles.get(0);
+        this.isEnabled = isEnabled;
     }
 }

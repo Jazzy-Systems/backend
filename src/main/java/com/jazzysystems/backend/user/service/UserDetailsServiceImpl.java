@@ -17,6 +17,10 @@ import com.jazzysystems.backend.user.UserDetailsImpl;
 import com.jazzysystems.backend.user.UserMapper;
 import com.jazzysystems.backend.user.dto.UserDTO;
 import com.jazzysystems.backend.user.repository.UserRepository;
+import com.jazzysystems.backend.resident.Resident;
+import com.jazzysystems.backend.resident.repository.ResidentRepository;
+import com.jazzysystems.backend.securityguard.SecurityGuard;
+import com.jazzysystems.backend.securityguard.repository.SecurityGuardRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +35,12 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserService {
     private PersonRepository personRepository;
 
     @Autowired
+    private ResidentRepository residentRepository;
+
+    @Autowired
+    private SecurityGuardRepository securityGuardRepository;
+
+    @Autowired
     private UserMapper userMapper;
 
     @Transactional
@@ -40,7 +50,21 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserService {
         if (optionalPerson.isPresent()) {
             Optional<User> optionalUser = userRepository.findUserByPerson(optionalPerson.get());
             if (optionalUser.isPresent()) {
-                return new UserDetailsImpl(optionalUser.get());
+                Boolean isUser = true;
+                Optional <Resident> optionalResident = residentRepository.findByPerson(optionalPerson.get());
+                Optional <SecurityGuard> optionalSecurityGuard = securityGuardRepository.findByPerson(optionalPerson.get());
+                
+                if(optionalResident.isPresent()) isUser = optionalResident.get().getIsResident();
+                if(optionalSecurityGuard.isPresent()) isUser = optionalSecurityGuard.get().getIsActive();
+
+                if(isUser){
+                    return new UserDetailsImpl(optionalUser.get());
+                }
+                else  {
+                    throw new UsernameNotFoundException("User is not available");    
+                }
+                
+                
             } else {
                 throw new UsernameNotFoundException("User Not Found");
             }

@@ -25,6 +25,7 @@ public class SecurityGuardImpl implements SecurityGuardService {
     @Override
     public SecurityGuard saveSecurityGuard(SecurityGuardDTO securityGuardDTO) {
         SecurityGuard securityGuard = securityGuardMapper.convertDTOtoSecurityGuard(securityGuardDTO);
+        securityGuard.setIsActive(true);
         return securityGuardRepository.save(securityGuard);
     }
 

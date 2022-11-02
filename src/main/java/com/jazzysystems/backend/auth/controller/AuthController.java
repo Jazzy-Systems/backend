@@ -107,7 +107,7 @@ public class AuthController {
 
         return ResponseEntity.ok(new JwtResponsePOJO(jwt,
                 userDetails.getUsername(),
-                roles));
+                roles,userDetails.isEnabled()));
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -149,7 +149,7 @@ public class AuthController {
         // Create new user's account only if the data is correct
         if (saveUser) {
             UserDTO userDTO = new UserDTO(null, passwordEncoder.encode(signUpDTO.getPassword()),
-                    false, person, role);
+                    true, person, role);
             userService.saveUser(userDTO);
             return ResponseEntity.ok(("User registered successfully!"));
         }
@@ -204,6 +204,7 @@ public class AuthController {
         User user = userService.findUserByEmail(recoverPasswordDTO.getEmail());
         String password = securityCodeGenerator.generatePassword(LEN);
         user.setPassword(passwordEncoder.encode(password));
+        user.setEnabled(false);
         userRepository.save(user);
         // TODO emailsend password;
         return ResponseEntity.ok(("A su correo se ha enviado los pasos para recuperar contraseña"));
@@ -212,7 +213,11 @@ public class AuthController {
     @PutMapping(value = "/recover")
     public ResponseEntity<?> recoverPassword(@RequestBody RecoverPasswordDTO recoverPasswordDTO) {
         // TODO changedpassword email
+        System.out.println(recoverPasswordDTO.getEmail());
+        System.out.println(recoverPasswordDTO.getNewPassword());
+        System.out.println(recoverPasswordDTO.getCurrentPassword());
         User user = userService.findUserByEmail(recoverPasswordDTO.getEmail());
+        System.out.println(user.getUserId());
         if (user.equals(authentication.getUser()) &&
                 passwordEncoder.matches(
                         recoverPasswordDTO.getCurrentPassword(), user.getPassword())) {

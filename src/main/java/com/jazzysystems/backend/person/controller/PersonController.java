@@ -74,7 +74,7 @@ public class PersonController {
      * 
      * @return Person
      */
-    @GetMapping({ "/person/" })
+    @GetMapping({ "/myprofile/" })
     public ResponseEntity<?> getPerson() {
         Person person = personService.getPerson();
         return new ResponseEntity<Person>(person, HttpStatus.OK);
