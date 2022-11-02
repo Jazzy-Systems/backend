@@ -14,7 +14,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +25,7 @@ import com.jazzysystems.backend.apartment.Apartment;
 import com.jazzysystems.backend.apartment.service.ApartmentService;
 import com.jazzysystems.backend.auth.dto.JwtResponsePOJO;
 import com.jazzysystems.backend.auth.dto.LoginPOJO;
+import com.jazzysystems.backend.auth.dto.RecoverPasswordDTO;
 import com.jazzysystems.backend.auth.dto.RegisterUserPOJO;
 import com.jazzysystems.backend.auth.dto.SignUpDTO;
 import com.jazzysystems.backend.auth.jwt.JwtUtils;
@@ -38,9 +41,12 @@ import com.jazzysystems.backend.role.service.RoleService;
 import com.jazzysystems.backend.securityguard.SecurityGuard;
 import com.jazzysystems.backend.securityguard.dto.SecurityGuardDTO;
 import com.jazzysystems.backend.securityguard.service.SecurityGuardService;
+import com.jazzysystems.backend.user.User;
 import com.jazzysystems.backend.user.UserDetailsImpl;
 import com.jazzysystems.backend.user.dto.UserDTO;
+import com.jazzysystems.backend.user.repository.UserRepository;
 import com.jazzysystems.backend.user.service.UserService;
+import com.jazzysystems.backend.util.SecurityCodeGenerator;
 import com.jazzysystems.backend.util.emailSender.EmailService;
 
 import lombok.AllArgsConstructor;
@@ -77,6 +83,12 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtUtils jwtUtils;
+    @Autowired
+    private com.jazzysystems.backend.auth.Authentication authentication;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private SecurityCodeGenerator securityCodeGenerator;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(
@@ -184,6 +196,34 @@ public class AuthController {
         }
 
         return ResponseEntity.ok(("Person registered successfully!"));
+    }
+
+    @GetMapping(value = "/recover")
+    public ResponseEntity<?> sendRecoverPassword(@RequestBody RecoverPasswordDTO recoverPasswordDTO) {
+        int LEN = 10;
+        User user = userService.findUserByEmail(recoverPasswordDTO.getEmail());
+        String password = securityCodeGenerator.generatePassword(LEN);
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+        // TODO emailsend password;
+        return ResponseEntity.ok(("A su correo se ha enviado los pasos para recuperar contraseña"));
+    }
+
+    @PutMapping(value = "/recover")
+    public ResponseEntity<?> recoverPassword(@RequestBody RecoverPasswordDTO recoverPasswordDTO) {
+        // TODO changedpassword email
+        User user = userService.findUserByEmail(recoverPasswordDTO.getEmail());
+        if (user.equals(authentication.getUser()) &&
+                passwordEncoder.matches(
+                        recoverPasswordDTO.getCurrentPassword(), user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(recoverPasswordDTO.getNewPassword()));
+            userRepository.save(user);
+        } else {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Error: Datos incorrectos");
+        }
+        return ResponseEntity.ok(("Se ha cambiado la contraseña!"));
     }
 
 }

@@ -79,7 +79,6 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserService {
     public User saveUser(UserDTO userDTO) {
         User user = userMapper.convertDTOtoUser(userDTO);
         return userRepository.save(user);
-
     }
 
 }

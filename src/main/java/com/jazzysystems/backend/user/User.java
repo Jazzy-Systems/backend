@@ -21,11 +21,13 @@ import com.jazzysystems.backend.person.Person;
 import com.jazzysystems.backend.role.Role;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
@@ -54,4 +56,14 @@ public class User implements Serializable {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Role role;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        User that = (User) o;
+        return this.getUserId().equals(that.getUserId()) &&
+                this.getPassword().equals(that.getPassword());
+    }
 }
