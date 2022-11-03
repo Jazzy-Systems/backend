@@ -17,6 +17,7 @@ import org.thymeleaf.context.Context;
 import com.jazzysystems.backend.communique.Communique;
 import com.jazzysystems.backend.pack.Pack;
 import com.jazzysystems.backend.person.Person;
+import com.jazzysystems.backend.request.Request;
 import com.jazzysystems.backend.resident.Resident;
 import com.jazzysystems.backend.resident.repository.ResidentRepository;
 
@@ -156,6 +157,26 @@ public class EmailService {
             ctx.setVariable("url", "TODO");
             final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
             this.sendEmail(htmlContent, person.getEmail(), "Cambio de Contraseña");
+        } catch (Exception e) {
+            System.out.println(e.getMessage() + " No se pudo enviar el mensaje");
+        }
+    }
+
+    public void sendResponseRequest(Person person, Request request) {
+        String TEMPLATE_NAME = "responseRequest";
+        try {
+            final Context ctx = new Context(LocaleContextHolder.getLocale());
+            ctx.setVariable("name", person.getFirstName() + " " + person.getLastName());
+            ctx.setVariable("email", person.getEmail());
+            ctx.setVariable("title", request.getTitleRequest());
+            ctx.setVariable("description", request.getDescriptionRequest());
+            ctx.setVariable("response", request.getResponseRequest());
+            ctx.setVariable("date", LocalDateTime.now());
+            ctx.setVariable("springLogo", SPRING_LOGO_IMAGE);
+            // TODO url of signup when deployed
+            ctx.setVariable("url", "TODO");
+            final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
+            this.sendEmail(htmlContent, person.getEmail(), "Respuesta a PQRS: " + request.getTitleRequest());
         } catch (Exception e) {
             System.out.println(e.getMessage() + " No se pudo enviar el mensaje");
         }

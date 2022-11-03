@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:remove="all">Respuesta a PQRS</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style type="text/css">
+        body {
+            font-family: calibri, 'DejaVu Sans', Arial, Helvetica, sans-serif;
+        }
+
+        a.link {
+            border: solid 1px #000;
+            background-color: #000;
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            display: block;
+            width: 360px;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>Respuesta a PQRS: <span th:text="${title}"></span></h1>
+    <div>Hola, <b th:text="${name}"></b> !</div>
+    <p>
+        JazzySystemsApp le informa que la administración ha dado respuesta a su PQRS: <span th:text="${title}"></span>
+        Email address : <b th:text="${email}">email</b><br />
+        Petición: <b th:text="${description}"></b><br />
+        Respuesta: <b th:text="${response}"></b><br />
+        Fecha de respuesta: <b th:text="${date}"></b><br />
+        <br />
+        Por favor haga click en el siguiente enlace para ver la respuesta en JazzySystemsApp.
+    </p>
+    <p style="text-align: left;">
+        <a class="link" href="#" th:href="${url}">JazzySystemsApp: PQRS</a>
+    </p>
+    <br>
+    <p>
+        <img src="images/logo.png" data-th-src="|cid:springLogo|" height="80" />
+    </p>
+    <p>
+        Cordialmente, <br />
+        &emsp; <em>JazzySystemsApp</em>
+    </p>
+</body>
+
+</html>

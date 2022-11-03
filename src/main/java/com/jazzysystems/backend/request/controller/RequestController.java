@@ -18,6 +18,7 @@ import com.jazzysystems.backend.person.service.PersonService;
 import com.jazzysystems.backend.request.Request;
 import com.jazzysystems.backend.request.dto.RequestDTO;
 import com.jazzysystems.backend.request.service.RequestService;
+import com.jazzysystems.backend.util.emailSender.EmailService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,40 +33,43 @@ public class RequestController {
     @Autowired
     private final PersonService personService;
 
+    @Autowired
+    private final EmailService emailService;
+
     @GetMapping(value = "")
     public ResponseEntity<?> findAllRequest() {
         return new ResponseEntity<>(requestService.findAllRequest(), HttpStatus.OK);
-    }   
-    
+    }
+
     @GetMapping(value = "/person/{persondni}")
-    public ResponseEntity<?> findRequestsByPerson(@PathVariable Long persondni) {        
+    public ResponseEntity<?> findRequestsByPerson(@PathVariable Long persondni) {
         return new ResponseEntity<>(requestService.findRequestsByPerson(persondni), HttpStatus.OK);
-    } 
+    }
 
     @GetMapping(value = "myallrequest")
     public ResponseEntity<?> findRequestsByPerson() {
         String emailOrusername = SecurityContextHolder.getContext().getAuthentication().getName();
         Person person = personService.findPersonByEmail(emailOrusername);
         return new ResponseEntity<>(requestService.findRequestsByPerson(person.getDni()), HttpStatus.OK);
-    } 
+    }
 
     @GetMapping(value = "forstatus/{status}")
     public ResponseEntity<?> findAllByPersonAndStatusRequest(@PathVariable Boolean status) {
         String emailOrusername = SecurityContextHolder.getContext().getAuthentication().getName();
         Person person = personService.findPersonByEmail(emailOrusername);
-        return new ResponseEntity<>(requestService.findAllByPersonAndStatusRequest(person,status), HttpStatus.OK);
+        return new ResponseEntity<>(requestService.findAllByPersonAndStatusRequest(person, status), HttpStatus.OK);
     }
-    
-    
+
     @PostMapping()
     public ResponseEntity<?> save(@RequestBody RequestDTO requestDTO) {
-            Request request = requestService.saveRequest(requestDTO);
-            return new ResponseEntity<Request>(request, HttpStatus.CREATED);
+        Request request = requestService.saveRequest(requestDTO);
+        return new ResponseEntity<Request>(request, HttpStatus.CREATED);
     }
-    
+
     @PutMapping({ "/{packId}" })
     public ResponseEntity<?> update(@PathVariable("packId") Long requestId, @RequestBody RequestDTO requestDTO) {
         Request request = requestService.updateRequest(requestId, requestDTO);
-        return new ResponseEntity<Request>(request, HttpStatus.CREATED);       
+        emailService.sendResponseRequest(request.getPerson(), request);
+        return new ResponseEntity<Request>(request, HttpStatus.CREATED);
     }
 }
