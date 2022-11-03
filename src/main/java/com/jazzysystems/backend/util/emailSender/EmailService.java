@@ -131,13 +131,31 @@ public class EmailService {
         try {
             final Context ctx = new Context(LocaleContextHolder.getLocale());
             ctx.setVariable("name", person.getFirstName() + " " + person.getLastName());
+            ctx.setVariable("email", person.getEmail());
             ctx.setVariable("date", LocalDateTime.now());
             ctx.setVariable("password", password);
             ctx.setVariable("springLogo", SPRING_LOGO_IMAGE);
             // TODO url of signup when deployed
             ctx.setVariable("url", "TODO");
             final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
-            this.sendEmail(htmlContent, person.getEmail(), "Recuperar contraseña");
+            this.sendEmail(htmlContent, person.getEmail(), "Recuperar contraseña en JazzySystemsApp");
+        } catch (Exception e) {
+            System.out.println(e.getMessage() + " No se pudo enviar el mensaje");
+        }
+    }
+
+    public void sendChangePasswordNotification(Person person) {
+        String TEMPLATE_NAME = "changepassword";
+        try {
+            final Context ctx = new Context(LocaleContextHolder.getLocale());
+            ctx.setVariable("name", person.getFirstName() + " " + person.getLastName());
+            ctx.setVariable("email", person.getEmail());
+            ctx.setVariable("date", LocalDateTime.now());
+            ctx.setVariable("springLogo", SPRING_LOGO_IMAGE);
+            // TODO url of signup when deployed
+            ctx.setVariable("url", "TODO");
+            final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
+            this.sendEmail(htmlContent, person.getEmail(), "Cambio de Contraseña");
         } catch (Exception e) {
             System.out.println(e.getMessage() + " No se pudo enviar el mensaje");
         }

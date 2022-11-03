@@ -107,7 +107,7 @@ public class AuthController {
 
         return ResponseEntity.ok(new JwtResponsePOJO(jwt,
                 userDetails.getUsername(),
-                roles,userDetails.isEnabled()));
+                roles, userDetails.isEnabled()));
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -206,16 +206,31 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(password));
         user.setEnabled(false);
         userRepository.save(user);
-        // TODO emailsend password;
+        emailService.sendRecoveredPassword(user.getPerson(), password);
         return ResponseEntity.ok(("A su correo se ha enviado los pasos para recuperar contraseña"));
     }
 
     @PutMapping(value = "/recover")
     public ResponseEntity<?> recoverPassword(@RequestBody RecoverPasswordDTO recoverPasswordDTO) {
         // TODO changedpassword email
-        System.out.println(recoverPasswordDTO.getEmail());
-        System.out.println(recoverPasswordDTO.getNewPassword());
-        System.out.println(recoverPasswordDTO.getCurrentPassword());
+        User user = userService.findUserByEmail(recoverPasswordDTO.getEmail());
+        System.out.println(user.getUserId());
+        if (passwordEncoder.matches(
+                recoverPasswordDTO.getCurrentPassword(), user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(recoverPasswordDTO.getNewPassword()));
+            userRepository.save(user);
+            emailService.sendChangePasswordNotification(user.getPerson());
+        } else {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Error: Datos incorrectos");
+        }
+        return ResponseEntity.ok(("Se ha cambiado la contraseña!"));
+    }
+
+    @PutMapping(value = "/changepassword")
+    public ResponseEntity<?> changePassword(@RequestBody RecoverPasswordDTO recoverPasswordDTO) {
+
         User user = userService.findUserByEmail(recoverPasswordDTO.getEmail());
         System.out.println(user.getUserId());
         if (user.equals(authentication.getUser()) &&
@@ -223,6 +238,7 @@ public class AuthController {
                         recoverPasswordDTO.getCurrentPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(recoverPasswordDTO.getNewPassword()));
             userRepository.save(user);
+            emailService.sendChangePasswordNotification(user.getPerson());
         } else {
             return ResponseEntity
                     .badRequest()
