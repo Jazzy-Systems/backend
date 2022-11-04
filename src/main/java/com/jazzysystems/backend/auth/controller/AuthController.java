@@ -198,7 +198,7 @@ public class AuthController {
         return ResponseEntity.ok(("Person registered successfully!"));
     }
 
-    @GetMapping(value = "/recover")
+    @PostMapping(value = "/recover")
     public ResponseEntity<?> sendRecoverPassword(@RequestBody RecoverPasswordDTO recoverPasswordDTO) {
         int LEN = 10;
         User user = userService.findUserByEmail(recoverPasswordDTO.getEmail());
