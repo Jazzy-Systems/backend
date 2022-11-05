@@ -23,6 +23,8 @@ public interface ResidentService {
 
     Resident findByPerson(Person person);
 
+    List <Resident> findByAparmentResident(Long apartmentId);
+
     Boolean ExistsByApartmentAndIsRepresentative(Boolean isRepresentative, Apartment apartment);
 
 }

@@ -70,6 +70,13 @@ public class ResidentServiceImpl implements ResidentService {
     }
 
     @Override
+    public List <Resident> findByAparmentResident(Long apartmentId) {
+        Apartment apartment = new Apartment();
+        apartment.setApartmentId(apartmentId);
+        return residentRepository.getFindByApartmentAndIsResident(apartment,true);
+    }
+
+    @Override
     public Boolean ExistsByApartmentAndIsRepresentative(Boolean isRepresentative, Apartment apartment) {
         return residentRepository.existsByApartmentAndIsRepresentative(apartment, isRepresentative);
     }

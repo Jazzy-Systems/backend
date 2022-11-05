@@ -1,5 +1,6 @@
 package com.jazzysystems.backend.resident.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,13 +24,14 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("api/v1/resident")
 public class ResidentController {
 
+    @Autowired
     private final ResidentService residentService;
 
     @GetMapping(value = "")
     public ResponseEntity<?> findAllAResidents() {
         return new ResponseEntity<>(residentService.findAll(), HttpStatus.OK);
     }
-
+ 
     @GetMapping({ "/{residentId}" })
     public ResponseEntity<?> findResident(@PathVariable Long residentId) {
         Resident resident = residentService.findById(residentId);

@@ -1,5 +1,6 @@
 package com.jazzysystems.backend.resident.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +13,8 @@ import com.jazzysystems.backend.resident.Resident;
 @Repository
 public interface ResidentRepository extends JpaRepository<Resident, Long> {
     Optional<Resident> findByPerson(Person person);
+
+    List<Resident> getFindByApartmentAndIsResident(Apartment apartment, Boolean isResident);
 
     Boolean existsByApartmentAndIsRepresentative(
             Apartment apartment, Boolean isRepresentative);
