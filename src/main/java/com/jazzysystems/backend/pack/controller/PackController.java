@@ -21,8 +21,6 @@ import com.jazzysystems.backend.person.Person;
 import com.jazzysystems.backend.pack.dto.PackDTO;
 import com.jazzysystems.backend.pack.service.PackService;
 import com.jazzysystems.backend.person.service.PersonService;
-import com.jazzysystems.backend.securityguard.SecurityGuard;
-import com.jazzysystems.backend.securityguard.service.SecurityGuardService;
 import com.jazzysystems.backend.util.emailSender.EmailService;
 
 import lombok.RequiredArgsConstructor;
@@ -40,9 +38,6 @@ public class PackController {
 
     @Autowired
     private final PersonService personService;
-
-    @Autowired
-    private final SecurityGuardService securityGuardService;
 
     @GetMapping(value = "")
     public ResponseEntity<?> findAllPacks() {
@@ -72,22 +67,10 @@ public class PackController {
 
     @PostMapping()
     public ResponseEntity<?> save(@RequestBody PackDTO packDTO) {
-        String emailOrusername = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        Person securityPerson = personService.findPersonByEmail(emailOrusername);
-        SecurityGuard securityGuard = securityGuardService.findByPerson(securityPerson);
-
-        Person person = personService.findPersonByDni(packDTO.getPerson().getDni());
-
-        if (!securityGuard.equals(null) && !person.equals(null)) {
-            packDTO.setSecurityGuard(securityGuard);
-            packDTO.setPerson(person);
-            Pack pack = packService.savePack(packDTO);
-            // send Email()
-            emailService.sendPackNotification(person, pack);
-            return new ResponseEntity<Pack>(pack, HttpStatus.CREATED);
-        }
-        return new ResponseEntity<String>("Error Bad Request, please check the fields of pack", HttpStatus.BAD_REQUEST);
+        
+        Pack pack = packService.savePack(packDTO);
+        emailService.sendPackNotification(pack.getPerson(), pack);
+        return new ResponseEntity<Pack>(pack, HttpStatus.CREATED);
     }
 
     @PutMapping({ "/{packId}" })
