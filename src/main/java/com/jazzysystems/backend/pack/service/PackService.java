@@ -17,9 +17,11 @@ public interface PackService {
 
     Pack findByIdPack(Long packId);
 
-    List<Pack> findAllPack();
+    List<PackDTO> findAllPack();
 
     List<Pack> findAllPackByReceived(Boolean received);
+
+    List<PackDTO> findAllPackApartament(Long apartmentId);
 
     List<Pack> findPacksByPerson(Person person);
 

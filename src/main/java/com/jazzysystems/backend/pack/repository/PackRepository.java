@@ -15,4 +15,5 @@ public interface PackRepository extends JpaRepository<Pack, Long> {
     List<Pack> findByPerson(Person person);
     List<Pack> findByReceived(Boolean received);
     List<Pack> findByPerson(SecurityGuard securityGuard);
+    List<Pack> getFindByPersonAndReceived(Person person, Boolean received);
 }

@@ -207,6 +207,7 @@ public class AuthController {
         int LEN = 10;
         User user = userService.findUserByEmail(recoverPasswordDTO.getEmail());
         String password = securityCodeGenerator.generatePassword(LEN);
+        //System.out.println(password);
         user.setPassword(passwordEncoder.encode(password));
         user.setEnabled(false);
         userRepository.save(user);

@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jazzysystems.backend.auth.Authentication;
 import com.jazzysystems.backend.pack.Pack;
 import com.jazzysystems.backend.pack.PackMapper;
 import com.jazzysystems.backend.person.Person;
@@ -36,6 +36,9 @@ public class PackController {
     private final EmailService emailService;
     @Autowired
     private final PackService packService;
+
+    @Autowired
+    private final Authentication authentication;
 
     @Autowired
     private final PersonService personService;
@@ -60,10 +63,15 @@ public class PackController {
         return new ResponseEntity<>(pack, HttpStatus.OK);
     }
 
+    @GetMapping({ "/all/{apartmentId}" })
+    public ResponseEntity<?> findPacksByAparment(@PathVariable Long apartmentId) {
+        List<PackDTO> listpackDTO = packService.findAllPackApartament(apartmentId);
+        return new ResponseEntity<>(listpackDTO, HttpStatus.OK);
+    }
+
     @GetMapping({ "/mypacks" })
     public ResponseEntity<?> findMyPacksByPerson() {
-        String emailOrusername = SecurityContextHolder.getContext().getAuthentication().getName();
-        Person person = personService.findPersonByEmail(emailOrusername);
+        Person person = authentication.getAuthenticatedPerson();
 
         List<Pack> pack = packService.findPacksByPerson(person);
         return new ResponseEntity<>(pack, HttpStatus.OK);
@@ -71,7 +79,7 @@ public class PackController {
 
     @PostMapping()
     public ResponseEntity<?> save(@RequestBody PackDTO packDTO) {
-        
+
         Pack pack = packService.savePack(packDTO);
         packDTO = packMapper.convertPackToDTO(pack);
         emailService.sendPackNotification(pack.getPerson(), pack);
@@ -81,7 +89,8 @@ public class PackController {
     @PutMapping({ "/{packId}" })
     public ResponseEntity<?> update(@PathVariable("packId") Long packId, @RequestBody PackDTO packDTO) {
         Pack pack = packService.updatePack(packId, packDTO);
-        return new ResponseEntity<Pack>(pack, HttpStatus.CREATED);
+        packDTO = packMapper.convertPackToDTO(pack);
+        return new ResponseEntity<PackDTO>(packDTO, HttpStatus.CREATED);
     }
 
     @DeleteMapping({ "/{packId}" })
