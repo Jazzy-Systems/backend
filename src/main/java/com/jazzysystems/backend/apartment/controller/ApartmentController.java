@@ -31,6 +31,12 @@ public class ApartmentController {
         return new ResponseEntity<>(apartmentService.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/all")
+    public ResponseEntity<?> findAllfindAllApartmentsNoCode() {
+        return new ResponseEntity<>(apartmentService.findAllNoCode(), HttpStatus.OK);
+    }
+
+
     @GetMapping({ "/{apartmentId}" })
     public ResponseEntity<?> findApartment(@PathVariable Long apartmentId) {
         Apartment apartment = apartmentService.findApartmentById(apartmentId);

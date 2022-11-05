@@ -68,6 +68,15 @@ public class ApartmentServiceImpl implements ApartmentService {
     }
 
     @Override
+    public List<Apartment> findAllNoCode() {
+        List<Apartment> listApartment = apartmentRepository.findAll();
+        for(Apartment apartment: listApartment){
+            apartment.setCodeApartment("");
+        }
+        return listApartment;
+    }
+
+    @Override
     public Boolean existsById(Long apartmentId) {
         return apartmentRepository.existsById(apartmentId);
     }

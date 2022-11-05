@@ -17,7 +17,9 @@ public interface ApartmentService {
 
     Apartment findApartmentById(Long apartmentId);
 
-    List<Apartment> findAll();
+    List<Apartment> findAll(); 
+
+    List<Apartment> findAllNoCode();
 
     Apartment findByBuildingNameAndNumber(
             String buildingName, String number);
