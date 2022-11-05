@@ -22,6 +22,8 @@ public interface PersonService {
     void deletePersonById(Long personId);
 
     List<Person> findAll();
+    
+    List<Person> findAllResident(Long apartmentId);
 
     Person findPersonByEmail(String email);
 

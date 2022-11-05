@@ -1,7 +1,9 @@
 package com.jazzysystems.backend.person.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jazzysystems.backend.auth.Authentication;
@@ -10,6 +12,8 @@ import com.jazzysystems.backend.person.Person;
 import com.jazzysystems.backend.person.PersonMapper;
 import com.jazzysystems.backend.person.dto.PersonDTO;
 import com.jazzysystems.backend.person.repository.PersonRepository;
+import com.jazzysystems.backend.resident.Resident;
+import com.jazzysystems.backend.resident.service.ResidentService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,12 +25,27 @@ public class PersonServiceImpl implements PersonService {
 
     private final PersonMapper personMapper;
 
+    @Autowired
     private final Authentication authentication;
+    
+    @Autowired
+    private final ResidentService residentService;
 
     @Override
     public List<Person> findAll() {
         return personRepository.findAll();
     }
+
+    @Override
+    public List<Person> findAllResident(Long apartmentId) {
+        List <Resident> listResident = residentService.findByAparmentResident(apartmentId);  
+        List <Person> listPerson = new ArrayList <Person>();
+        for(Resident resident: listResident){
+            listPerson.add(findById(resident.getPerson().getPersonId()));
+        }
+        return listPerson;
+    }
+
 
     @Override
     public Person findPersonByDni(long dni) {

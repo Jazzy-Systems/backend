@@ -37,6 +37,11 @@ public class PersonController {
         return new ResponseEntity<Person>(person, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/apart/{apartmentId}")
+    public ResponseEntity<?> findByAparmentResidentPerson(@PathVariable Long apartmentId) {
+        return new ResponseEntity<>(personService.findAllResident(apartmentId), HttpStatus.OK);
+    }
+
     @PostMapping()
     public ResponseEntity<?> savePerson(@RequestBody PersonDTO personDTO) {
         Person person = personService.savePerson(personDTO);
