@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jazzysystems.backend.pack.Pack;
+import com.jazzysystems.backend.pack.PackMapper;
 import com.jazzysystems.backend.person.Person;
 import com.jazzysystems.backend.pack.dto.PackDTO;
 import com.jazzysystems.backend.pack.service.PackService;
@@ -38,6 +39,9 @@ public class PackController {
 
     @Autowired
     private final PersonService personService;
+
+    @Autowired
+    private final PackMapper packMapper;
 
     @GetMapping(value = "")
     public ResponseEntity<?> findAllPacks() {
@@ -69,8 +73,9 @@ public class PackController {
     public ResponseEntity<?> save(@RequestBody PackDTO packDTO) {
         
         Pack pack = packService.savePack(packDTO);
+        packDTO = packMapper.convertPackToDTO(pack);
         emailService.sendPackNotification(pack.getPerson(), pack);
-        return new ResponseEntity<Pack>(pack, HttpStatus.CREATED);
+        return new ResponseEntity<PackDTO>(packDTO, HttpStatus.CREATED);
     }
 
     @PutMapping({ "/{packId}" })

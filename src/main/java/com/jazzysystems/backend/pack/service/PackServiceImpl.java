@@ -47,6 +47,7 @@ public class PackServiceImpl implements PackService {
         pack.setSecurityGuard(securityGuard);
         pack.setDateArrival(dateArrival);
         pack.setReceived(false);
+
         return packRepository.save(pack);
     }
 

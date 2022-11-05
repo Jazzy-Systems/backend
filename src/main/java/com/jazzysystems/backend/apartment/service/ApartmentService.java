@@ -19,7 +19,7 @@ public interface ApartmentService {
 
     List<Apartment> findAll(); 
 
-    List<Apartment> findAllNoCode();
+    List<ApartmentDTO> findAllNoCode();
 
     Apartment findByBuildingNameAndNumber(
             String buildingName, String number);

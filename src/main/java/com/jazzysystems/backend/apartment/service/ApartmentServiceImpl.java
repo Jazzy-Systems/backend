@@ -1,5 +1,6 @@
 package com.jazzysystems.backend.apartment.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -68,12 +69,13 @@ public class ApartmentServiceImpl implements ApartmentService {
     }
 
     @Override
-    public List<Apartment> findAllNoCode() {
+    public List<ApartmentDTO> findAllNoCode() {
         List<Apartment> listApartment = apartmentRepository.findAll();
+        List<ApartmentDTO> listApartmentDTO = new ArrayList <ApartmentDTO> ();
         for(Apartment apartment: listApartment){
-            apartment.setCodeApartment("");
+            listApartmentDTO.add(apartmentMapper.convertApartmentToDTO(apartment));
         }
-        return listApartment;
+        return listApartmentDTO;
     }
 
     @Override

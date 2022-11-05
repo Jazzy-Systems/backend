@@ -29,6 +29,8 @@ import com.jazzysystems.backend.auth.dto.RegisterUserPOJO;
 import com.jazzysystems.backend.auth.dto.SignUpDTO;
 import com.jazzysystems.backend.auth.jwt.JwtUtils;
 import com.jazzysystems.backend.company.Company;
+import com.jazzysystems.backend.company.CompanyMapper;
+import com.jazzysystems.backend.company.dto.CompanyDTO;
 import com.jazzysystems.backend.company.service.CompanyService;
 import com.jazzysystems.backend.person.Person;
 import com.jazzysystems.backend.person.service.PersonService;
@@ -88,6 +90,8 @@ public class AuthController {
     private UserRepository userRepository;
     @Autowired
     private SecurityCodeGenerator securityCodeGenerator;
+    @Autowired
+    private CompanyMapper companyMapper;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(
@@ -185,7 +189,8 @@ public class AuthController {
         } else if (role.getRoleName().equals("ROLE_GUARD")) {
             Company company = companyService.findByCompanyName(
                     registerUserPOJO.getCompanyName());
-            SecurityGuardDTO securityGuardDTO = new SecurityGuardDTO(person, company);
+            CompanyDTO companyDTO = companyMapper.convertCompanyToDTO(company);
+            SecurityGuardDTO securityGuardDTO = new SecurityGuardDTO(person, companyDTO);
             securityGuardService.saveSecurityGuard(securityGuardDTO);
             emailService.sendRegisterCode(person, company.getCodeCompany(), TEMPLATE_NAME);
         } else {

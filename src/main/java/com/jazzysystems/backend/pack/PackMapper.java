@@ -1,17 +1,25 @@
 package com.jazzysystems.backend.pack;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jazzysystems.backend.pack.dto.PackDTO;
+import com.jazzysystems.backend.securityguard.SecurityGuardMapper;
 
 
 @Component
 
 public class PackMapper {
+
+    @Autowired
+    private SecurityGuardMapper securityGuardMapper;
+
     public PackDTO convertPackToDTO(Pack pack) {
         ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(pack, PackDTO.class);
+        PackDTO packDTO = modelMapper.map(pack, PackDTO.class);
+        packDTO.setSecurityGuardDTO(securityGuardMapper.convertSecurityGuardToDTO(pack.getSecurityGuard()));        
+        return packDTO;
     }
 
     public Pack convertDTOtoPack(PackDTO packDTO) {

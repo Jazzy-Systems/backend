@@ -1,6 +1,6 @@
 package com.jazzysystems.backend.securityguard.dto;
 
-import com.jazzysystems.backend.company.Company;
+import com.jazzysystems.backend.company.dto.CompanyDTO;
 import com.jazzysystems.backend.person.Person;
 
 import lombok.*;
@@ -12,15 +12,15 @@ public class SecurityGuardDTO {
 
     private Long securityGuardId;
     
-    private Company company;
+    private CompanyDTO companyDTO;
     
     private Person person;
 
     private Boolean isActive;
 
-    public SecurityGuardDTO(Person person, Company company) {
+    public SecurityGuardDTO(Person person, CompanyDTO companyDTO) {
         this.person = person;
-        this.company = company;
+        this.companyDTO = companyDTO;
     }
 
 }
