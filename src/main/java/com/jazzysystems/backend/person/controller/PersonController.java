@@ -55,10 +55,10 @@ public class PersonController {
         return new ResponseEntity<>(person, HttpStatus.OK);
     }
 
-    @PutMapping({ "/update/{phone}" })
+    @PutMapping({ "/update" })
     public ResponseEntity<?> updatePersonProfile(
-            @PathVariable("phone") Long phone) {
-        Person person = personService.updatePhone(phone);
+         @RequestBody PersonDTO personDTO) {
+        Person person = personService.updatePhone(personDTO.getPhone());
         return new ResponseEntity<>(person, HttpStatus.OK);
     }
 
