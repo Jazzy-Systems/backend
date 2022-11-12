@@ -175,8 +175,8 @@ public class AuthController {
         }
         Role role = roleService.findbyRoleName(registerUserPOJO.getRoleName());
         // SAVE person
-        person = personService.savePerson(registerUserPOJO.getPersonDTO());
         if (role.getRoleName().equals("ROLE_RESIDENT")) {
+            person = personService.savePerson(registerUserPOJO.getPersonDTO());
             Apartment apartment = apartmentService.findByBuildingNameAndNumber(
                     registerUserPOJO.getApartmentDTO().getBuildingName(),
                     registerUserPOJO.getApartmentDTO().getApartmentNumber());
@@ -187,13 +187,16 @@ public class AuthController {
             residentService.saveResident(residentDTO);
             emailService.sendRegisterCode(person, apartment.getCodeApartment(), TEMPLATE_NAME);
         } else if (role.getRoleName().equals("ROLE_GUARD")) {
+            person = personService.savePerson(registerUserPOJO.getPersonDTO());
             Company company = companyService.findByCompanyName(
                     registerUserPOJO.getCompanyName());
             CompanyDTO companyDTO = companyMapper.convertCompanyToDTO(company);
             SecurityGuardDTO securityGuardDTO = new SecurityGuardDTO(person, companyDTO);
             securityGuardService.saveSecurityGuard(securityGuardDTO);
             emailService.sendRegisterCode(person, company.getCodeCompany(), TEMPLATE_NAME);
-        } else {
+        } else if (role.getRoleName().equals("ROLE_ADMIN")) {
+
+        }else {
             return ResponseEntity
                     .badRequest()
                     .body("Error: The Role doesn'not exist");

@@ -21,6 +21,8 @@ public interface PersonService {
 
     void deletePersonById(Long personId);
 
+    void deletePersonByDNI(Long persoDNI);
+
     List<Person> findAll();
     
     List<Person> findAllResident(Long apartmentId);

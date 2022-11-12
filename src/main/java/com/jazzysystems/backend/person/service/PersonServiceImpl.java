@@ -14,6 +14,7 @@ import com.jazzysystems.backend.person.dto.PersonDTO;
 import com.jazzysystems.backend.person.repository.PersonRepository;
 import com.jazzysystems.backend.resident.Resident;
 import com.jazzysystems.backend.resident.service.ResidentService;
+import com.jazzysystems.backend.util.emailSender.EmailService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -91,6 +92,12 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public void deletePersonById(Long personId) {
+        personRepository.deleteById(personId);
+    }
+
+    @Override
+    public void deletePersonByDNI(Long persoDNI) {
+        Long personId = this.findPersonByDni(persoDNI).getPersonId();
         personRepository.deleteById(personId);
     }
 
