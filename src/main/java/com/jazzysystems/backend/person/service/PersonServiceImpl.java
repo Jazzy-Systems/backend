@@ -14,7 +14,6 @@ import com.jazzysystems.backend.person.dto.PersonDTO;
 import com.jazzysystems.backend.person.repository.PersonRepository;
 import com.jazzysystems.backend.resident.Resident;
 import com.jazzysystems.backend.resident.service.ResidentService;
-import com.jazzysystems.backend.util.emailSender.EmailService;
 
 import lombok.RequiredArgsConstructor;
 
