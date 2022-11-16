@@ -61,7 +61,7 @@ public class WebSecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/api/auth/**", "/api/v1/role/**",
-                        "api/v1/typeCommunique","api/v1/person/**")
+                        "api/v1/typeCommunique", "api/v1/person/**")
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "api/v1/communique/").hasAnyRole("ADMIN", "RESIDENT", "GUARD")
                 .antMatchers("api/v1/communique/**").hasRole("ADMIN")
@@ -70,6 +70,9 @@ public class WebSecurityConfig {
                 .antMatchers("/api/v1/apartment/all").hasRole("GUARD")
                 .antMatchers("/api/v1/person/apart/**").hasRole("GUARD")
                 .antMatchers("/api/v1/company/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/v1/request/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/request/**").hasAnyRole("ADMIN", "RESIDENT")
+                .antMatchers(HttpMethod.POST, "/api/v1/request/**").hasAnyRole("RESIDENT")
                 .antMatchers(HttpMethod.GET, "/api/v1/pack/mypacks").hasAnyRole("RESIDENT")
                 .antMatchers(HttpMethod.DELETE, "/api/v1/pack/**").denyAll()
                 .antMatchers("/api/v1/pack/**").hasRole("GUARD")

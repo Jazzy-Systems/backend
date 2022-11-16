@@ -66,8 +66,8 @@ public class RequestController {
         return new ResponseEntity<Request>(request, HttpStatus.CREATED);
     }
 
-    @PutMapping({ "/{packId}" })
-    public ResponseEntity<?> update(@PathVariable("packId") Long requestId, @RequestBody RequestDTO requestDTO) {
+    @PutMapping({ "/{requestId}" })
+    public ResponseEntity<?> update(@PathVariable("requestId") Long requestId, @RequestBody RequestDTO requestDTO) {
         Request request = requestService.updateRequest(requestId, requestDTO);
         emailService.sendResponseRequest(request.getPerson(), request);
         return new ResponseEntity<Request>(request, HttpStatus.CREATED);

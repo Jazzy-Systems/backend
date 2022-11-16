@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequiredArgsConstructor
-@RequestMapping("api/v1/typerequest/")
+@RequestMapping("/api/v1/typerequest/")
 public class TypeRequestController {
 
     @Autowired
