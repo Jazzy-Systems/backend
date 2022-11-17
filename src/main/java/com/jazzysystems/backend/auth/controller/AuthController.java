@@ -196,7 +196,7 @@ public class AuthController {
             emailService.sendRegisterCode(person, company.getCodeCompany(), TEMPLATE_NAME);
         } else if (role.getRoleName().equals("ROLE_ADMIN")) {
 
-        }else {
+        } else {
             return ResponseEntity
                     .badRequest()
                     .body("Error: The Role doesn'not exist");
@@ -210,7 +210,7 @@ public class AuthController {
         int LEN = 10;
         User user = userService.findUserByEmail(recoverPasswordDTO.getEmail());
         String password = securityCodeGenerator.generatePassword(LEN);
-        //System.out.println(password);
+        // System.out.println(password);
         user.setPassword(passwordEncoder.encode(password));
         user.setEnabled(false);
         userRepository.save(user);
@@ -220,7 +220,6 @@ public class AuthController {
 
     @PutMapping(value = "/recover")
     public ResponseEntity<?> recoverPassword(@RequestBody RecoverPasswordDTO recoverPasswordDTO) {
-        // TODO changedpassword email
         User user = userService.findUserByEmail(recoverPasswordDTO.getEmail());
         System.out.println(user.getUserId());
         if (passwordEncoder.matches(

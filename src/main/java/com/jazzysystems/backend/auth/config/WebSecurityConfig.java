@@ -54,7 +54,6 @@ public class WebSecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 
-    // TODO create list urls for each role, also permit by http method type
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()

@@ -81,8 +81,7 @@ public class EmailService {
             ctx.setVariable("description", communique.getDescription());
             ctx.setVariable("datePublished", communique.getDatePublished());
             ctx.setVariable("springLogo", SPRING_LOGO_IMAGE);
-            // TODO url of communiques
-            ctx.setVariable("url", "TODO");
+            ctx.setVariable("url", "https://demojs.azurewebsites.net/profile");
             final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
             // send email
             this.sendEmail(htmlContent, person.getEmail(), communique.getTitleCommunique());
@@ -99,8 +98,7 @@ public class EmailService {
             ctx.setVariable("name", person.getFirstName() + " " + person.getLastName());
             ctx.setVariable("code", code);
             ctx.setVariable("springLogo", SPRING_LOGO_IMAGE);
-            // TODO url of signup when deployed
-            ctx.setVariable("url", "TODO");
+            ctx.setVariable("url", "https://demojs.azurewebsites.net/registerUser");
             final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
             this.sendEmail(htmlContent, person.getEmail(), "Bienvenido a JazzySystems");
         } catch (Exception e) {
@@ -118,8 +116,7 @@ public class EmailService {
             ctx.setVariable("messenger", pack.getMessengerName());
             ctx.setVariable("observation", pack.getObservation());
             ctx.setVariable("springLogo", SPRING_LOGO_IMAGE);
-            // TODO url of signup when deployed
-            ctx.setVariable("url", "TODO");
+            ctx.setVariable("url", "https://demojs.azurewebsites.net/profile/mypackages");
             final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
             this.sendEmail(htmlContent, person.getEmail(), "Notificación: Paquete en portería");
         } catch (Exception e) {
@@ -136,8 +133,7 @@ public class EmailService {
             ctx.setVariable("date", LocalDateTime.now());
             ctx.setVariable("password", password);
             ctx.setVariable("springLogo", SPRING_LOGO_IMAGE);
-            // TODO url of signup when deployed
-            ctx.setVariable("url", "TODO");
+            ctx.setVariable("url", "https://demojs.azurewebsites.net/recoverpassword");
             final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
             this.sendEmail(htmlContent, person.getEmail(), "Recuperar contraseña en JazzySystemsApp");
         } catch (Exception e) {
@@ -153,8 +149,7 @@ public class EmailService {
             ctx.setVariable("email", person.getEmail());
             ctx.setVariable("date", LocalDateTime.now());
             ctx.setVariable("springLogo", SPRING_LOGO_IMAGE);
-            // TODO url of signup when deployed
-            ctx.setVariable("url", "TODO");
+            ctx.setVariable("url", "https://demojs.azurewebsites.net");
             final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
             this.sendEmail(htmlContent, person.getEmail(), "Cambio de Contraseña");
         } catch (Exception e) {
@@ -173,8 +168,7 @@ public class EmailService {
             ctx.setVariable("response", request.getResponseRequest());
             ctx.setVariable("date", LocalDateTime.now());
             ctx.setVariable("springLogo", SPRING_LOGO_IMAGE);
-            // TODO url of signup when deployed
-            ctx.setVariable("url", "TODO");
+            ctx.setVariable("url", "https://demojs.azurewebsites.net/profile/myallrequests");
             final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
             this.sendEmail(htmlContent, person.getEmail(), "Respuesta a PQRS: " + request.getTitleRequest());
         } catch (Exception e) {
