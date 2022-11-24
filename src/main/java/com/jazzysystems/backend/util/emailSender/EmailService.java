@@ -116,7 +116,7 @@ public class EmailService {
             ctx.setVariable("messenger", pack.getMessengerName());
             ctx.setVariable("observation", pack.getObservation());
             ctx.setVariable("springLogo", SPRING_LOGO_IMAGE);
-            ctx.setVariable("url", "https://demojs.azurewebsites.net/profile/mypackages");
+            ctx.setVariable("url", "https://demojs.azurewebsites.net/profile/myPackages");
             final String htmlContent = this.htmlTemplateEngine.process(TEMPLATE_NAME, ctx);
             this.sendEmail(htmlContent, person.getEmail(), "Notificación: Paquete en portería");
         } catch (Exception e) {
